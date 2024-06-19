@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,7 +19,6 @@ import java.util.Set;
 public class GameActivity extends AppCompatActivity {
 
     private static final String TAG = "GameActivity";
-
 
 
     private GridLayout gridLayout;
@@ -67,26 +65,16 @@ public class GameActivity extends AppCompatActivity {
         int gridColumns = 16;
         gridLayout.setColumnCount(gridColumns);
 
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int totalWidth = displayMetrics.widthPixels;
-        int totalHeight = displayMetrics.heightPixels - timerTextView.getHeight();
-        int buttonWidth = totalWidth / gridColumns;
-        int buttonHeight = totalHeight / gridRows;
-
-
-
         for (int i = 0; i < gridRows; i++) {
             for (int j = 0; j < gridColumns; j++) {
                 Button tileButton = new Button(this);
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                 params.width = 0;
                 params.height = 0;
-                //params.setMargins(2, 2, 2, 2); // Add margins to buttons
                 params.rowSpec = GridLayout.spec(i, 1f);
                 params.columnSpec = GridLayout.spec(j, 1f);
                 tileButton.setLayoutParams(params);
 
-                //tileButton.setBackgroundColor(Color.LTGRAY);
                 int finalI = i;
                 int finalJ = j;
                 tileButton.setOnClickListener(view -> onTileTapped(tileButton, finalI, finalJ));
