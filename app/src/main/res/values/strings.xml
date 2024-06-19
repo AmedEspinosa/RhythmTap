@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RhythmTapGame</string>
+    <string name="_01_00">01:00</string>
 </resources>
