@@ -10,6 +10,7 @@ public class BeatTile {
         this.isActive = true;
     }
 
+
     public void toggle() {
         this.isActive = !this.isActive;
     }
@@ -26,4 +27,9 @@ public class BeatTile {
     public int getY() {
         return y;
     }
+
+
+
+
+
 }

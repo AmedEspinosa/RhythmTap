@@ -5,7 +5,9 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.gridlayout.widget.GridLayout; // Import this class
 import android.widget.Toast;
@@ -25,9 +27,17 @@ public class GameActivity extends AppCompatActivity {
     private List<BeatTile> beatTiles;
     private TextView timerTextView;
     private CountDownTimer gameTimer;
-    private long timeLeftInMillis = 10000; // 60 seconds
+    private long timeLeftInMillis = 10000;
     Random random;
 
+    private static final int[] ROW_COLORS = {
+            Color.parseColor("#800080"), // Purple
+            Color.parseColor("#FF0000"), // Red
+            Color.parseColor("#FFFF00"), // Yellow
+            Color.parseColor("#00FFFF"), // Cyan
+            Color.parseColor("#0000FF"), // Blue
+            Color.parseColor("#008000")  // Green
+    };
 
 
 
@@ -58,15 +68,40 @@ public class GameActivity extends AppCompatActivity {
         Log.d(TAG, "setupGrid: Setting up grid");
 
 
+        int[] rowIcons = {
+                R.drawable.bass,
+                R.drawable.reddrum,
+                R.drawable.yellowhands,
+                R.drawable.cymbalcyan,
+                R.drawable.hihatblue,
+                R.drawable.tomdrumgreen
+        };
+
         // Grid rows
         int gridRows = 6;
         gridLayout.setRowCount(gridRows);
         // Grid columns
-        int gridColumns = 16;
+        int gridColumns = 17;
         gridLayout.setColumnCount(gridColumns);
 
+
+
         for (int i = 0; i < gridRows; i++) {
-            for (int j = 0; j < gridColumns; j++) {
+            // Add the icon at the beginning of the row
+            ImageView rowIcon = new ImageView(this);
+            GridLayout.LayoutParams iconParams = new GridLayout.LayoutParams();
+            iconParams.width = 0;
+            iconParams.height = 0;
+            iconParams.rowSpec = GridLayout.spec(i, 1f);
+            iconParams.columnSpec = GridLayout.spec(0, 1f);
+            rowIcon.setLayoutParams(iconParams);
+            rowIcon.setImageResource(rowIcons[i]);
+            rowIcon.setTag("icon");
+            rowIcon.setBackgroundColor(Color.TRANSPARENT);
+            gridLayout.addView(rowIcon);
+
+
+            for (int j = 1; j < gridColumns; j++) {
                 Button tileButton = new Button(this);
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                 params.width = 0;
@@ -76,10 +111,10 @@ public class GameActivity extends AppCompatActivity {
                 tileButton.setLayoutParams(params);
 
                 int finalI = i;
-                int finalJ = j;
+                int finalJ = j -1;
                 tileButton.setOnClickListener(view -> onTileTapped(tileButton, finalI, finalJ));
 
-                BeatTile tile = new BeatTile(i, j);
+                BeatTile tile = new BeatTile(i, j-1);
 
 
                 beatTiles.add(tile);
@@ -89,7 +124,8 @@ public class GameActivity extends AppCompatActivity {
         }
 
 
-        int maxTiles = gridRows * gridColumns;
+
+        int maxTiles = gridRows * (gridColumns-1);
         int totalTilesToToggle = Math.min((int) Math.round((timeLeftInMillis / 1000.0) * 3.2), maxTiles);
 
 
@@ -99,16 +135,27 @@ public class GameActivity extends AppCompatActivity {
         Set<Integer> toggledTilesIndices = new HashSet<>();
 
         while (toggledTilesIndices.size() < totalTilesToToggle) {
-            int randomIndex = random.nextInt(maxTiles);
+            int randomRow = random.nextInt(gridRows);
+            int randomColumn = random.nextInt(gridColumns -1)+1;
+            int randomIndex = randomRow * (gridColumns-1) + (randomColumn-1);
             toggledTilesIndices.add(randomIndex);
+
         }
 
         for (int index : toggledTilesIndices) {
             BeatTile tile = beatTiles.get(index);
             tile.toggle();
-            Button tileButton = (Button) gridLayout.getChildAt(index);
-            onTileTapped(tileButton,tile.getX(),tile.getY());
-        }
+            int row = index / (gridColumns - 1); // Calculate row
+            int col = index % (gridColumns - 1) + 1; // Calculate column
+            View view = gridLayout.getChildAt(row * gridColumns + col);
+            if (view instanceof Button) {
+                Button tileButton = (Button) view;
+                onTileTapped(tileButton, tile.getX(), tile.getY());
+
+            }
+
+            }
+
 
         Log.d(TAG, "setupGrid: Grid setup complete");
 
@@ -116,7 +163,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void startGameTimer() {
-        gameTimer = new CountDownTimer(timeLeftInMillis, 1000) {
+        gameTimer = new CountDownTimer(timeLeftInMillis + 5000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
@@ -131,7 +178,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void updateTimerText() {
-        int minutes = (int) (timeLeftInMillis / 1000) / 60;
+        int minutes = (int) ((timeLeftInMillis) / 1000) / 60;
         int seconds = (int) (timeLeftInMillis / 1000) % 60;
         @SuppressLint("DefaultLocale") String timeFormatted = String.format("%02d:%02d", minutes, seconds);
         timerTextView.setText(timeFormatted);
@@ -144,8 +191,12 @@ public class GameActivity extends AppCompatActivity {
         for (BeatTile tile : beatTiles) {
             if (tile.getX() == x && tile.getY() == y) {
                 tile.toggle();
-                tileButton.setBackgroundColor(tile.isActive() ? Color.GREEN : Color.TRANSPARENT);
-                break;
+                if (tile.isActive()) {
+                    tileButton.setBackgroundColor(ROW_COLORS[x]);
+                } else {
+                tileButton.setBackgroundColor(Color.TRANSPARENT);
+                }
+
             }
         }
 
@@ -173,4 +224,8 @@ public class GameActivity extends AppCompatActivity {
     private void showGameWon() {
         Toast.makeText(this, "Congratulations! You Win!", Toast.LENGTH_SHORT).show();
     }
+
+
+
+
 }
