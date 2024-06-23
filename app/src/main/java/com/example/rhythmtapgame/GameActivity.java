@@ -179,7 +179,7 @@ public class GameActivity extends AppCompatActivity {
 
         
          /*
-         //Logic to test activation of entire row od tiles
+         //Logic to test activation of entire row of tiles
 
         int testRow = 1; // Activate the third row (index 2)
 
