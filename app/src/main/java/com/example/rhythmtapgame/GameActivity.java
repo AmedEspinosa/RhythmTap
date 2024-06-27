@@ -1,6 +1,7 @@
 package com.example.rhythmtapgame;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -13,7 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.gridlayout.widget.GridLayout; 
+import androidx.gridlayout.widget.GridLayout;
 
 import android.widget.Toast;
 
@@ -41,7 +42,10 @@ public class GameActivity extends AppCompatActivity {
     private int[][] rowSounds;
     private Handler soundHandler;
     private int currentColumn = 0;
-    private final int tempo = 250; // Tempo of 45 BPM in milliseconds (60,000 ms / 45 BPM)
+    private final int tempo = 250;
+    private int currentLevel = 1; // Track the current level
+    private static final int BASE_TILE_COUNT = 10; // Base number of tiles to toggle
+    private static final double DIFFICULTY_INCREMENT = 0.2;
     private static final int[] ROW_COLORS = {
             Color.parseColor("#800080"), // Purple
             Color.parseColor("#FF0000"), // Red
@@ -57,36 +61,57 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        //Log.d(TAG, "onCreate: Starting");
-
 
         soundPool = new SoundPool.Builder().setMaxStreams(30).build();
         rowSounds = new int[6][5];
 
         loadSounds();
 
-
         gridLayout = findViewById(R.id.gridLayout);
         timerTextView = findViewById(R.id.timerTextView);
         beatTiles = new ArrayList<>();
         random = new Random();
 
-        //Log.d(TAG, "onCreate: Views initialized");
+
+       startNewLevel();
 
 
+    }
+
+    private void startNewLevel() {
+        stopSoundLoop(); // Stop the current sound loop
+        releaseSoundPool(); // Release the current SoundPool
+
+        // Initialize a new SoundPool
+        soundPool = new SoundPool.Builder().setMaxStreams(30).build();
+        loadSounds(); // Reload sounds into the new SoundPool
+
+        beatTiles.clear(); // Clear previous tiles
+        gridLayout.removeAllViews(); // Remove previous views
         setupGrid();
         startGameTimer();
-        findAdjacentTiles();
-        List<List<Integer>> adjacentClusters = findAdjacentTiles(); // Call the method to find adjacent tiles
+        List<List<Integer>> adjacentClusters = findAdjacentTiles();
         assignSoundsToClusters(adjacentClusters);
         startSoundLoop();
+    }
 
-        //Log.d(TAG, "onCreate: Setup complete");
+    ///////////////////////////SOUND LOGIC//////////////////////////////////////////////////////////
 
+    private void startSoundLoop() {
+        soundHandler = new Handler(Looper.getMainLooper());
+        soundHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                playColumnSounds(currentColumn);
+                currentColumn = (currentColumn + 1) % 16;
+                soundHandler.postDelayed(this, tempo);
+            }
+        });
     }
 
     @SuppressLint("DiscouragedApi")
     private void loadSounds() {
+        // Load sounds for single tiles
         String[] instruments = {"bass", "drum", "clap", "cymbal", "hihat", "tom_tom"};
         for (int i = 0; i < instruments.length; i++) {
             // Load the single tile sound
@@ -105,97 +130,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-
-    private List<List<Integer>> findAdjacentTiles() {
-        List<List<Integer>> adjacentClusters = new ArrayList<>();
-
-        for (int row = 0; row < gridLayout.getRowCount(); row++) {
-            int consecutiveCount = 0;
-            List<Integer> clusterIndexes = new ArrayList<>();
-
-            for (int col = 1; col < gridLayout.getColumnCount(); col++) {
-                int index = row * (gridLayout.getColumnCount() - 1) + (col - 1);
-                BeatTile tile = beatTiles.get(index);
-
-                if (tile.isInitiallyToggled()) {
-                    consecutiveCount++;
-                    clusterIndexes.add(index);
-                } else {
-                    if (consecutiveCount > 1) { // Only consider clusters of size 2 or more
-                        adjacentClusters.add(new ArrayList<>(clusterIndexes));
-                        //Log.d(TAG, "Row " + row + ": Found " + consecutiveCount + " adjacent tiles at indexes " + clusterIndexes);
-                    }
-                    // Reset for next cluster
-                    consecutiveCount = 0;
-                    clusterIndexes.clear();
-                }
-            }
-
-            // Check if there's a cluster at the end of the row
-            if (consecutiveCount > 1) { // Only consider clusters of size 2 or more
-                adjacentClusters.add(new ArrayList<>(clusterIndexes));
-                //Log.d(TAG, "Row " + row + ": Found " + consecutiveCount + " adjacent tiles at indexes " + clusterIndexes);
-            }
-
-            for (List<Integer> cluster : adjacentClusters) {
-                for (int index : cluster) {
-                    beatTiles.get(index).setPartOfCluster(true);
-                }
-            }
-        }
-
-        return adjacentClusters;
-    }
-
-
-    private void assignSoundsToClusters(List<List<Integer>> adjacentClusters) {
-        for (List<Integer> cluster : adjacentClusters) {
-            if (!cluster.isEmpty()) {
-                int row = cluster.get(0) / (gridLayout.getColumnCount() - 1);
-                int clusterSize = cluster.size();
-
-
-
-                for (int index : cluster) {
-                    BeatTile tile = beatTiles.get(index);
-                    if (row == 0) {
-                        tile.setSoundId(clusterSize);
-                    } if (row == 1) {
-                        tile.setSoundId(clusterSize + 4);
-                    } if (row == 2) {
-                        tile.setSoundId(clusterSize + 8);
-                    } if (row == 3) {
-                        tile.setSoundId(clusterSize + 12);
-                    } if (row == 4) {
-                        tile.setSoundId(clusterSize + 16);
-                    } if (row == 5) {
-                        tile.setSoundId(clusterSize + 20);
-                    }
-
-
-                    Log.e(TAG,"Tile at: " + tile.getX() + " " + tile.getY() + " Assigned: " + tile.getSoundId());
-                }
-            }
-        }
-    }
-
-
-    private void startSoundLoop() {
-        soundHandler = new Handler(Looper.getMainLooper());
-        soundHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                playColumnSounds(currentColumn);
-                currentColumn = (currentColumn + 1) % 16; // Move to the next column, loop back after 16
-                soundHandler.postDelayed(this, tempo);
-            }
-        });
-    }
-
-
     private void playColumnSounds(int column) {
-        //Log.d(TAG, "playColumnSounds: Playing sounds for column " + column);
-
         for (int i = 0; i < gridLayout.getRowCount(); i++) {
             int index = i * (gridLayout.getColumnCount() - 1) + column;
             if (index < beatTiles.size()) {
@@ -230,18 +165,93 @@ public class GameActivity extends AppCompatActivity {
             }
         }
     }
+/////////////////////////////////////CLUSTER TILE LOGIC////////////////////////////////////////////////
+
+    private List<List<Integer>> findAdjacentTiles() {
+        List<List<Integer>> adjacentClusters = new ArrayList<>();
+
+        for (int row = 0; row < gridLayout.getRowCount(); row++) {
+            int consecutiveCount = 0;
+            List<Integer> clusterIndexes = new ArrayList<>();
+
+            for (int col = 1; col < gridLayout.getColumnCount(); col++) {
+                int index = row * (gridLayout.getColumnCount() - 1) + (col - 1);
+                BeatTile tile = beatTiles.get(index);
+
+                if (tile.isInitiallyToggled()) {
+                    consecutiveCount++;
+                    clusterIndexes.add(index);
+                } else {
+                    if (consecutiveCount > 1) {
+                        adjacentClusters.add(new ArrayList<>(clusterIndexes));
+                    }
+                    consecutiveCount = 0;
+                    clusterIndexes.clear();
+                }
+            }
+
+            if (consecutiveCount > 1) {
+                adjacentClusters.add(new ArrayList<>(clusterIndexes));
+            }
+
+            for (List<Integer> cluster : adjacentClusters) {
+                for (int index : cluster) {
+                    beatTiles.get(index).setPartOfCluster(true);
+                }
+            }
+        }
+
+        return adjacentClusters;
+    }
+
+    private void assignSoundsToClusters(List<List<Integer>> adjacentClusters) {
+        for (List<Integer> cluster : adjacentClusters) {
+            if (!cluster.isEmpty()) {
+                int row = cluster.get(0) / (gridLayout.getColumnCount() - 1);
+                int clusterSize = cluster.size();
+
+
+                for (int index : cluster) {
+                    BeatTile tile = beatTiles.get(index);
+                    if (row == 0) {
+                        tile.setSoundId(clusterSize);
+                    }
+                    if (row == 1) {
+                        tile.setSoundId(clusterSize + 4);
+                    }
+                    if (row == 2) {
+                        tile.setSoundId(clusterSize + 8);
+                    }
+                    if (row == 3) {
+                        tile.setSoundId(clusterSize + 12);
+                    }
+                    if (row == 4) {
+                        tile.setSoundId(clusterSize + 16);
+                    }
+                    if (row == 5) {
+                        tile.setSoundId(clusterSize + 20);
+                    }
+
+
+                    Log.e(TAG, "Tile at: " + tile.getX() + " " + tile.getY() + " Assigned: "
+                            + tile.getSoundId());
+                }
+            }
+        }
+    }
 
 
     private boolean isFirstTileInCluster(int row, int column) {
         int index = row * (gridLayout.getColumnCount() - 1) + column;
         if (index > 0) {
             int previousIndex = index - 1;
-            return previousIndex >= beatTiles.size() || !beatTiles.get(previousIndex).isPartOfCluster() || !beatTiles.get(previousIndex).isActive();
+            return previousIndex >= beatTiles.size() || !beatTiles.get(previousIndex).isPartOfCluster()
+                    || !beatTiles.get(previousIndex).isActive();
         }
         return true;
     }
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private void setupGrid() {
         //Log.d(TAG, "setupGrid: Setting up grid");
@@ -308,7 +318,7 @@ public class GameActivity extends AppCompatActivity {
 
         
          /*
-         //Logic to test activation of entire row of tiles
+    ///////////Logic to test activation of entire row of tiles///////////////////////
 
         int testRow = 1; // Activate the third row (index 2)
 
@@ -330,10 +340,11 @@ public class GameActivity extends AppCompatActivity {
          */
 
 
-        int maxTiles = gridRows * (gridColumns - 1);
-        int totalTilesToToggle = Math.min((int) Math.round((timeLeftInMillis / 1000.0) * 3.2), maxTiles);
 
-        //Log.d(TAG, "setupGrid: Total tiles to toggle: " + totalTilesToToggle);
+        int maxTiles = gridRows * (gridColumns - 1);
+        int baseTilesToToggle = BASE_TILE_COUNT;
+        int levelTilesToToggle = (int) (baseTilesToToggle + (currentLevel - 1) * DIFFICULTY_INCREMENT * baseTilesToToggle);
+        int totalTilesToToggle = Math.min(levelTilesToToggle, maxTiles);
 
 
         Set<Integer> toggledTilesIndices = new HashSet<>();
@@ -358,13 +369,7 @@ public class GameActivity extends AppCompatActivity {
                 onTileTapped(tileButton, tile.getX(), tile.getY());
 
             }
-
         }
-
-
-        //Log.d(TAG, "setupGrid: Grid setup complete");
-
-
     }
 
     private void startGameTimer() {
@@ -391,7 +396,6 @@ public class GameActivity extends AppCompatActivity {
 
 
     private void onTileTapped(Button tileButton, int x, int y) {
-        // Find the tile in the list and toggle its state
         for (BeatTile tile : beatTiles) {
             if (tile.getX() == x && tile.getY() == y) {
                 if (!tile.isInitiallyToggled()) {
@@ -407,7 +411,6 @@ public class GameActivity extends AppCompatActivity {
             }
         }
 
-        // Check if all tiles are inactive
         if (areAllTilesInactive()) {
             gameTimer.cancel();
             showGameWon();
@@ -416,7 +419,7 @@ public class GameActivity extends AppCompatActivity {
 
     private boolean areAllTilesInactive() {
         for (BeatTile tile : beatTiles) {
-            if (tile.isActive()) {
+            if (tile.isActive() && tile.isInitiallyToggled()) {
                 return false;
             }
         }
@@ -424,12 +427,40 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void showGameOver() {
-        // Show game over screen
-        Toast.makeText(this, "Game Over!", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(GameActivity.this, GameOverActivity.class);
+        intent.putExtra("LEVEL", currentLevel); // Pass the current level
+        startActivity(intent);
+        onDestroy();
+        finish();
     }
 
     private void showGameWon() {
-        Toast.makeText(this, "Congratulations! You Win!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Level :" + currentLevel, Toast.LENGTH_SHORT).show();
+        nextLevel();
+
+    }
+
+    private void nextLevel() {
+        currentLevel++;
+        if (currentLevel % 6 == 0) {
+            currentLevel++; // Skip the next level to make it easier every 5 levels
+        }
+        startNewLevel();
+    }
+
+
+    private void stopSoundLoop() {
+        if (soundHandler != null) {
+            soundHandler.removeCallbacksAndMessages(null);
+            soundHandler = null;
+        }
+    }
+
+    private void releaseSoundPool() {
+        if (soundPool != null) {
+            soundPool.release();
+            soundPool = null;
+        }
     }
 
     @Override
