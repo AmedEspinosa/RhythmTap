@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.appcompat.v120)
     implementation(libs.androidx.gridlayout)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.commons.csv)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

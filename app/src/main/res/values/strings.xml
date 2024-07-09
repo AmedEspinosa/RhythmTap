@@ -4,4 +4,6 @@
     <string name="restart">Restart</string>
     <string name="main_menu">Main Menu</string>
     <string name="game_over">Game Over!</string>
+    <string name="level_1">Level: 1</string>
+    <string name="level">Level: 1</string>
 </resources>

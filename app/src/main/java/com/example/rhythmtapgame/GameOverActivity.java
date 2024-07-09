@@ -15,11 +15,18 @@ public class GameOverActivity extends AppCompatActivity {
         setContentView(R.layout.activity_game_over);
 
         TextView levelTextView = findViewById(R.id.levelTextView);
+        TextView accuracyTextView = findViewById(R.id.accuracyTextView);
 
         // Get the level from the Intent
         int level = getIntent().getIntExtra("LEVEL", 1);
+        int accuracy = getIntent().getIntExtra("ACCURACY", 0);
+
         String levelText = "You reached level " + level;
+        String accuracyText = "Accuracy: " + accuracy + "%";
+
         levelTextView.setText(levelText);
+        accuracyTextView.setText(accuracyText);
+
 
         Button restartButton = findViewById(R.id.restartButton);
         Button mainMenuButton = findViewById(R.id.mainMenuButton);
