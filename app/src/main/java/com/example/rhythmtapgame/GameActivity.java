@@ -7,6 +7,7 @@ import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -38,24 +39,35 @@ public class GameActivity extends AppCompatActivity {
     private int totalTaps = 0;
     private int correctTaps = 0;
     private int currentLevel = 1; // Track the current level
+    private int currentVariation;
     private static final int[] ROW_COLORS = {
-            Color.parseColor("#800080"), // Purple
-            Color.parseColor("#FF0000"), // Red
-            Color.parseColor("#FFFF00"), // Yellow
-            Color.parseColor("#00FFFF"), // Cyan
-            Color.parseColor("#0000FF"), // Blue
-            Color.parseColor("#008000")  // Green
+            Color.parseColor("#921bc7"), // Purple
+            Color.parseColor("#bc2431"), // Red
+            Color.parseColor("#e7d420"), // Yellow
+            Color.parseColor("#21d7cb"), // Cyan
+            Color.parseColor("#334bfb"), // Blue
+            Color.parseColor("#43a42a")  // Green
     };
     CSVProcessor csvProcessor;
     private String currentSong;
+    private int freezeCount = 3;
+    private int clearCount = 3;
+    private int addTimeCount = 3;
+    private boolean isTimerFrozen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
-        csvProcessor = new CSVProcessor(this, R.raw.tile_positions);
+
+
+        csvProcessor = new CSVProcessor();
+        setupPowerUpButtons();
 
 
         gridLayout = findViewById(R.id.gridLayout);
@@ -64,10 +76,12 @@ public class GameActivity extends AppCompatActivity {
         beatTiles = new ArrayList<>();
         random = new Random();
 
+
         startNewLevel();
 
 
     }
+
 
     private void startNewLevel() {
         if (mediaPlayer != null) {
@@ -76,16 +90,20 @@ public class GameActivity extends AppCompatActivity {
             mediaPlayer = null;
         }
 
+        csvProcessor.loadCSV(this, R.raw.tile_positions);
+        getSong();
+        currentVariation = getVariationForLevel(currentLevel,currentSong);
+
         beatTiles.clear(); // Clear previous tiles
         gridLayout.removeAllViews();
 
 
         // Remove previous views
         setupGrid();
-        startGameTimer();
+        startGameTimer(7000);
+        updatePowerUpCounts();
 
-
-        String level = "Level: " + currentLevel;
+        String level = "LEVEL " + currentLevel;
         levelTextView.setText(level); // Update the level TextView
 
 
@@ -96,42 +114,17 @@ public class GameActivity extends AppCompatActivity {
 
 
     private void setupGrid() {
-        //Log.d(TAG, "setupGrid: Setting up grid");
-
-
-        int[] rowIcons = {
-                R.drawable.bass,
-                R.drawable.reddrum,
-                R.drawable.yellowhands,
-                R.drawable.cymbalcyan,
-                R.drawable.hihatblue,
-                R.drawable.tomdrumgreen
-        };
-
         // Grid rows
         int gridRows = 6;
         gridLayout.setRowCount(gridRows);
         // Grid columns
-        int gridColumns = 17;
+        int gridColumns = 16;
         gridLayout.setColumnCount(gridColumns);
 
 
         for (int i = 0; i < gridRows; i++) {
             // Add the icon at the beginning of the row
-            ImageView rowIcon = new ImageView(this);
-            GridLayout.LayoutParams iconParams = new GridLayout.LayoutParams();
-            iconParams.width = 0;
-            iconParams.height = 0;
-            iconParams.rowSpec = GridLayout.spec(i, 1f);
-            iconParams.columnSpec = GridLayout.spec(0, 1f);
-            rowIcon.setLayoutParams(iconParams);
-            rowIcon.setImageResource(rowIcons[i]);
-            rowIcon.setTag("icon");
-            rowIcon.setBackgroundColor(Color.TRANSPARENT);
-            gridLayout.addView(rowIcon);
-
-
-            for (int j = 1; j < gridColumns; j++) {
+            for (int j = 0; j < gridColumns; j++) {
                 Button tileButton = new Button(this);
                 GridLayout.LayoutParams params = new GridLayout.LayoutParams();
                 params.width = 0;
@@ -141,30 +134,41 @@ public class GameActivity extends AppCompatActivity {
                 tileButton.setLayoutParams(params);
 
                 int finalI = i;
-                int finalJ = j - 1;
+                int finalJ = j;
                 tileButton.setOnClickListener(view -> onTileTapped(tileButton, finalI, finalJ));
 
-                BeatTile tile = new BeatTile(i, j - 1);
+                BeatTile tile = new BeatTile(i, j);
 
 
                 beatTiles.add(tile);
 
                 gridLayout.addView(tileButton);
             }
-        }
-        List<Integer> currentTilePositions = csvProcessor.getTilePositions(getSong(), currentLevel, getVariationForLevel(currentLevel, currentSong));
 
-        for (int index : currentTilePositions) {
-            BeatTile tile = beatTiles.get(index);
-            tile.setInitiallyToggled(true);
-            tile.toggle();
-            int row = index / (gridColumns - 1); // Calculate row
-            int col = index % (gridColumns - 1) + 1; // Calculate column
-            View view = gridLayout.getChildAt(row * gridColumns + col);
-            if (view instanceof Button) {
-                Button tileButton = (Button) view;
-                onTileTapped(tileButton, tile.getX(), tile.getY());
+
+        }
+
+        String songId;
+        if (currentSong.equalsIgnoreCase("string_dance")) {
+            songId = "sd";
+        } else songId = "am";
+        List<Integer> currentTilePositions = csvProcessor.getTilePositions(songId, currentLevel,currentVariation);
+
+        if (currentTilePositions != null) {
+            for (int index : currentTilePositions) {
+                BeatTile tile = beatTiles.get(index);
+                tile.setInitiallyToggled(true);
+                tile.toggle();
+                int row = index / (gridColumns); // Calculate row
+                int col = index % (gridColumns); // Calculate column
+                View view = gridLayout.getChildAt(row * gridColumns + col);
+                if (view instanceof Button) {
+                    Button tileButton = (Button) view;
+                    onTileTapped(tileButton, tile.getX(), tile.getY());
+                }
             }
+        } else {
+            Log.e("Tile Posititions","Error: currentTilePositions is null for songId: " + songId + ", currentLevel: " + currentLevel + ", currentVariation: " + currentVariation);
         }
 
 
@@ -179,7 +183,8 @@ public class GameActivity extends AppCompatActivity {
             level = 1;
         }
 
-        String trackName = currentSong + "_level_" + level + "_v" + getVariationForLevel(level, currentSong);
+
+        String trackName = currentSong + "_level_" + level + "_v" + currentVariation;
         Log.e("Track", "Track Name: " + trackName);
         int trackResId = getResources().getIdentifier(trackName, "raw", getPackageName());
 
@@ -194,6 +199,8 @@ public class GameActivity extends AppCompatActivity {
     private int getVariationForLevel(int level, String currentSong) {
         if (currentSong.equalsIgnoreCase("angelic_melody") && level % 6 == 0) {
             return random.nextInt((2 - 1) + 1) + 1;
+        } else if (currentSong.equalsIgnoreCase("string_dance") && level % 6==0) {
+            return random.nextInt((3 - 1) + 1) + 1;
         } else if (currentSong.equalsIgnoreCase("angelic_melody") && level < 14) {
             return random.nextInt((2 - 1) + 1) + 1;
         } else if (currentSong.equalsIgnoreCase("angelic_melody") ||
@@ -203,8 +210,8 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
-    private void startGameTimer() {
-        gameTimer = new CountDownTimer(timeLeftInMillis + 10000, 100) {
+    private void startGameTimer(int timeToAdd) {
+        gameTimer = new CountDownTimer(timeLeftInMillis + timeToAdd, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
@@ -221,19 +228,18 @@ public class GameActivity extends AppCompatActivity {
     private void updateTimerText() {
         int minutes = (int) ((timeLeftInMillis) / 1000) / 60;
         int seconds = (int) (timeLeftInMillis / 1000) % 60;
-        @SuppressLint("DefaultLocale") String timeFormatted = String.format("%02d:%02d", minutes, seconds);
+        @SuppressLint("DefaultLocale") String timeFormatted = String.format("%2d:%02d", minutes, seconds);
         timerTextView.setText(timeFormatted);
     }
 
-    private String getSong() {
+    private void getSong() {
         boolean result = random.nextBoolean();
         if (result) {
             currentSong = "angelic_melody";
-            return "am";
         } else {
             currentSong = "string_dance";
         }
-        return "sd";
+
 
     }
 
@@ -305,6 +311,71 @@ public class GameActivity extends AppCompatActivity {
         //releaseMediaPlayer();
 
     }
+
+
+    private void setupPowerUpButtons() {
+        findViewById(R.id.freezePowerUp).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                useFreezePowerUp();
+            }
+        });
+
+        findViewById(R.id.clearPowerUp).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                useClearPowerUp();
+            }
+        });
+
+        findViewById(R.id.timePowerUp).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                useAddTimePowerUp();
+            }
+        });
+    }
+
+    private void useFreezePowerUp() {
+        if (freezeCount > 0 && !isTimerFrozen) {
+            freezeCount--;
+            isTimerFrozen = true;
+            gameTimer.cancel();
+            long freezeDuration = 10000;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    isTimerFrozen = false;
+                    startGameTimer(7000);
+                }
+            }, freezeDuration);
+            updatePowerUpCounts();
+        }
+    }
+
+    private void useClearPowerUp() {
+        if (clearCount > 0) {
+            clearCount--;
+            currentLevel++;
+            startNewLevel();
+            updatePowerUpCounts();
+        }
+    }
+
+    private void useAddTimePowerUp() {
+        if (addTimeCount > 0) {
+            addTimeCount--;
+            startGameTimer(15000);
+            updatePowerUpCounts();
+        }
+    }
+
+    private void updatePowerUpCounts() {
+        ((TextView) findViewById(R.id.freezeCount)).setText(String.valueOf(freezeCount));
+        ((TextView) findViewById(R.id.clearCount)).setText(String.valueOf(clearCount));
+        ((TextView) findViewById(R.id.addCount)).setText(String.valueOf(addTimeCount));
+    }
+
 
 }
 

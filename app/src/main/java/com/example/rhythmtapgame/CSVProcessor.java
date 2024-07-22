@@ -18,8 +18,7 @@ public class CSVProcessor {
     private static final String TAG = "CSVProcessor";
     private final Map<String, List<Integer>> tilePositionsMap = new HashMap<>();
 
-    public CSVProcessor(Context context, int resourceId) {
-        loadCSV(context, resourceId);
+    public CSVProcessor() {
     }
 
     public void loadCSV(Context context, int resourceId) {
@@ -58,11 +57,16 @@ public class CSVProcessor {
         String key = songName + "_" + level + "_" + variation;
         List<Integer> tileIndexes = parseIndexes(indexes);
 
+
+
+
         if (!tilePositionsMap.containsKey(key)) {
             tilePositionsMap.put(key, new ArrayList<>());
         }
 
         Objects.requireNonNull(tilePositionsMap.get(key)).addAll(tileIndexes);
+        Log.e(TAG, "Key added: " + key);
+        Log.e(TAG, "Tile indexes: " + tileIndexes);
     }
 
     private List<Integer> parseIndexes(String indexes) {
@@ -83,11 +87,12 @@ public class CSVProcessor {
         String key;
         if (level % 6 == 0) {
             key = songName + "_" + 1 + "_" + variation;
-        } else if (level >= 14 && !(level % 6 == 0)) {
+        } else if (level >= 14) {
             key = songName + "_" + 14 + "_" + variation; // Handle levels 14 and above
         } else {
             key = songName + "_" + level + "_" + variation;
         }
+        Log.e(TAG, "Key for tile positions: " + key);
         return tilePositionsMap.get(key);
     }
 }
