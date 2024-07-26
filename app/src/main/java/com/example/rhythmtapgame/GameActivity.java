@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.gridlayout.widget.GridLayout;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.Random;
 
 public class GameActivity extends AppCompatActivity {
-
     private GridLayout gridLayout;
     private List<BeatTile> beatTiles;
     private TextView timerTextView;
@@ -36,6 +34,8 @@ public class GameActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private TextView levelTextView; // New TextView for the level
     private SoundPool soundPool;
+    private int freezeSoundId, clearSoundId, addTimeSoundId;
+    private int tilePressSoundId1, tilePressSoundId2;
     private int totalTaps = 0;
     private int correctTaps = 0;
     private int currentLevel = 1; // Track the current level
@@ -48,7 +48,7 @@ public class GameActivity extends AppCompatActivity {
             Color.parseColor("#334bfb"), // Blue
             Color.parseColor("#43a42a")  // Green
     };
-    CSVProcessor csvProcessor;
+    private CSVProcessor csvProcessor;
     private String currentSong;
     private int freezeCount = 3;
     private int clearCount = 3;
@@ -65,7 +65,6 @@ public class GameActivity extends AppCompatActivity {
         }
 
 
-
         csvProcessor = new CSVProcessor();
         setupPowerUpButtons();
 
@@ -76,12 +75,17 @@ public class GameActivity extends AppCompatActivity {
         beatTiles = new ArrayList<>();
         random = new Random();
 
+        soundPool = new SoundPool.Builder().setMaxStreams(2).build();
+        freezeSoundId = soundPool.load(this, R.raw.freeze_sound, 1);
+        clearSoundId = soundPool.load(this, R.raw.clear_sound, 1);
+        addTimeSoundId = soundPool.load(this, R.raw.add_time_sound, 1);
+        tilePressSoundId1 = soundPool.load(this,R.raw.bubble_1,1);
+        tilePressSoundId2 = soundPool.load(this,R.raw.bubble_2,1);
 
         startNewLevel();
 
 
     }
-
 
     private void startNewLevel() {
         if (mediaPlayer != null) {
@@ -92,7 +96,7 @@ public class GameActivity extends AppCompatActivity {
 
         csvProcessor.loadCSV(this, R.raw.tile_positions);
         getSong();
-        currentVariation = getVariationForLevel(currentLevel,currentSong);
+        currentVariation = getVariationForLevel(currentLevel, currentSong);
 
         beatTiles.clear(); // Clear previous tiles
         gridLayout.removeAllViews();
@@ -152,7 +156,7 @@ public class GameActivity extends AppCompatActivity {
         if (currentSong.equalsIgnoreCase("string_dance")) {
             songId = "sd";
         } else songId = "am";
-        List<Integer> currentTilePositions = csvProcessor.getTilePositions(songId, currentLevel,currentVariation);
+        List<Integer> currentTilePositions = csvProcessor.getTilePositions(songId, currentLevel, currentVariation);
 
         if (currentTilePositions != null) {
             for (int index : currentTilePositions) {
@@ -168,7 +172,7 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         } else {
-            Log.e("Tile Posititions","Error: currentTilePositions is null for songId: " + songId + ", currentLevel: " + currentLevel + ", currentVariation: " + currentVariation);
+            Log.e("Tile Posititions", "Error: currentTilePositions is null for songId: " + songId + ", currentLevel: " + currentLevel + ", currentVariation: " + currentVariation);
         }
 
 
@@ -186,7 +190,7 @@ public class GameActivity extends AppCompatActivity {
 
         String trackName = currentSong + "_level_" + level + "_v" + currentVariation;
         Log.e("Track", "Track Name: " + trackName);
-        int trackResId = getResources().getIdentifier(trackName, "raw", getPackageName());
+        @SuppressLint("DiscouragedApi") int trackResId = getResources().getIdentifier(trackName, "raw", getPackageName());
 
         if (mediaPlayer != null) {
             mediaPlayer.release();
@@ -199,7 +203,7 @@ public class GameActivity extends AppCompatActivity {
     private int getVariationForLevel(int level, String currentSong) {
         if (currentSong.equalsIgnoreCase("angelic_melody") && level % 6 == 0) {
             return random.nextInt((2 - 1) + 1) + 1;
-        } else if (currentSong.equalsIgnoreCase("string_dance") && level % 6==0) {
+        } else if (currentSong.equalsIgnoreCase("string_dance") && level % 6 == 0) {
             return random.nextInt((3 - 1) + 1) + 1;
         } else if (currentSong.equalsIgnoreCase("angelic_melody") && level < 14) {
             return random.nextInt((2 - 1) + 1) + 1;
@@ -211,7 +215,13 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void startGameTimer(int timeToAdd) {
-        gameTimer = new CountDownTimer(timeLeftInMillis + timeToAdd, 100) {
+        if (gameTimer != null) {
+            gameTimer.cancel();
+        }
+
+        timeLeftInMillis += timeToAdd;
+
+        gameTimer = new CountDownTimer(timeLeftInMillis, 100) {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
@@ -243,7 +253,6 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
-
     private void onTileTapped(Button tileButton, int x, int y) {
         for (BeatTile tile : beatTiles) {
             if (tile.getX() == x && tile.getY() == y) {
@@ -256,6 +265,8 @@ public class GameActivity extends AppCompatActivity {
                     tileButton.setBackgroundColor(ROW_COLORS[x]);
                 } else {
                     tileButton.setBackgroundColor(Color.TRANSPARENT);
+                    int soundToPlay = random.nextBoolean() ? tilePressSoundId1 : tilePressSoundId2;
+                    soundPool.play(soundToPlay, 0.25f, 0.25f, 0, 0, 1);
                     correctTaps++;
                     totalTaps++;
                 }
@@ -266,7 +277,7 @@ public class GameActivity extends AppCompatActivity {
 
         if (areAllTilesInactive()) {
             gameTimer.cancel();
-            showGameWon();
+            nextLevel();
         }
     }
 
@@ -308,32 +319,15 @@ public class GameActivity extends AppCompatActivity {
             soundPool.release();
             soundPool = null;
         }
-        //releaseMediaPlayer();
-
     }
 
 
     private void setupPowerUpButtons() {
-        findViewById(R.id.freezePowerUp).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                useFreezePowerUp();
-            }
-        });
+        findViewById(R.id.freezePowerUp).setOnClickListener(v -> useFreezePowerUp());
 
-        findViewById(R.id.clearPowerUp).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                useClearPowerUp();
-            }
-        });
+        findViewById(R.id.clearPowerUp).setOnClickListener(v -> useClearPowerUp());
 
-        findViewById(R.id.timePowerUp).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                useAddTimePowerUp();
-            }
-        });
+        findViewById(R.id.timePowerUp).setOnClickListener(v -> useAddTimePowerUp());
     }
 
     private void useFreezePowerUp() {
@@ -341,13 +335,11 @@ public class GameActivity extends AppCompatActivity {
             freezeCount--;
             isTimerFrozen = true;
             gameTimer.cancel();
+            soundPool.play(freezeSoundId,1, 1, 0, 0, 1);
             long freezeDuration = 10000;
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    isTimerFrozen = false;
-                    startGameTimer(7000);
-                }
+            new Handler().postDelayed(() -> {
+                isTimerFrozen = false;
+                startGameTimer(0);
             }, freezeDuration);
             updatePowerUpCounts();
         }
@@ -357,6 +349,8 @@ public class GameActivity extends AppCompatActivity {
         if (clearCount > 0) {
             clearCount--;
             currentLevel++;
+            gameTimer.cancel();
+            soundPool.play(clearSoundId,1, 1, 0, 0, 1);
             startNewLevel();
             updatePowerUpCounts();
         }
@@ -365,6 +359,8 @@ public class GameActivity extends AppCompatActivity {
     private void useAddTimePowerUp() {
         if (addTimeCount > 0) {
             addTimeCount--;
+            gameTimer.cancel();
+            soundPool.play(addTimeSoundId,0.25f, 0.25f, 0, 0, 1);
             startGameTimer(15000);
             updatePowerUpCounts();
         }
