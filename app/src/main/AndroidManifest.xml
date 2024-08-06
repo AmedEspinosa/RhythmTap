@@ -15,10 +15,13 @@
         <activity
             android:name=".GameActivity"
             android:exported="true"
-            android:theme="@style/Theme.RhythmTapGame"
-            android:screenOrientation="landscape"
-            tools:ignore="DiscouragedApi">
+            android:theme="@style/Theme.RhythmTapGame">
+        </activity>
 
+        <activity
+            android:name=".MainActivity"
+            android:theme="@style/Theme.RhythmTapGame"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -27,21 +30,6 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".GameOverActivity"
-            android:theme="@style/Theme.RhythmTapGame"
-            android:screenOrientation="landscape"
-            android:exported="true"
-            tools:ignore="DiscouragedApi">
-        </activity>
-
-        <activity
-            android:name=".MainActivity"
-            android:theme="@style/Theme.RhythmTapGame"
-            android:screenOrientation="landscape"
-            android:exported="true"
-            tools:ignore="DiscouragedApi">
-        </activity>
 
     </application>
 

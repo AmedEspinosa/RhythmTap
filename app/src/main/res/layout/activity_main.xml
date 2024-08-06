@@ -3,86 +3,299 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#304fff">
+    android:background="@drawable/gradient_background"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
 
-    <TextView
-        android:id="@+id/pressPlayText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/press_play"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:shadowColor="#000000"
-        android:shadowDx="20"
-        android:shadowDy="15"
-        android:shadowRadius="30"
-        android:textStyle="bold"
-        android:fontFamily="@font/orbitron"
-        app:layout_constraintTop_toBottomOf="@+id/playButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.1" />
+    <com.example.rhythmtapgame.BouncingSquaresView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-
-    <TextView
-        android:id="@+id/titleText2"
-        android:layout_width="227dp"
-        android:layout_height="99dp"
-        android:fontFamily="@font/orbitron"
-        android:scaleX="0.99"
-        android:scaleY="3"
-        android:shadowColor="#000000"
-        android:shadowDx="20"
-        android:shadowDy="15"
-        android:shadowRadius="30"
-        android:text="@string/tiles"
-        android:textColor="#FFFFFF"
-        android:textSize="63sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/playButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/playButton"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.481" />
-
-    <TextView
-        android:id="@+id/titleText"
-        android:layout_width="227dp"
-        android:layout_height="99dp"
-        android:fontFamily="@font/orbitron"
-        android:scaleX="0.99"
-        android:scaleY="3"
-        android:shadowColor="#000000"
-        android:shadowDx="20"
-        android:shadowDy="15"
-        android:shadowRadius="30"
-        android:text="@string/beat"
-        android:textColor="#FFFFFF"
-        android:textSize="63sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/playButton"
-        app:layout_constraintEnd_toStartOf="@+id/playButton"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.481" />
-
-    <ImageButton
-        android:id="@+id/playButton"
-        android:layout_width="265dp"
-        android:layout_height="265dp"
-        android:background="@null"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/start_game"
-        android:src="@drawable/playbutton"
+    <FrameLayout
+        android:layout_width="394dp"
+        android:layout_height="282dp"
+        android:layout_marginStart="8.5dp"
+        android:layout_marginTop="98dp"
+        android:layout_marginEnd="8.5dp"
+        android:layout_marginBottom="511dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/shadow2Title"
+            android:layout_width="220dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/beat_tiles"
+            android:textColor="#2C1C1C"
+            android:textSize="80sp"
+            android:translationY="5dp" />
+
+        <TextView
+            android:id="@+id/shadow1Title"
+            android:layout_width="220dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/beat_tiles"
+            android:textColor="#4E3A3A"
+            android:textSize="80sp"
+            android:translationY="2.5dp" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="220dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/beat_tiles"
+            android:textSize="80sp" />
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="95dp"
+        android:layout_marginTop="301dp"
+        android:layout_marginBottom="336dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/shadow2PressPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/press_play"
+            android:textColor="#2C1C1C"
+            android:textSize="48sp"
+            android:translationY="6dp" />
+
+        <TextView
+            android:id="@+id/shadow1PressPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/press_play"
+            android:textColor="#4E3A3A"
+            android:textSize="48sp"
+            android:translationY="3dp" />
+
+        <TextView
+            android:id="@+id/PressPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/press_play"
+            android:textColor="#FFFFFF"
+            android:textSize="48sp" />
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/navigationMenu"
+        android:layout_width="match_parent"
+        android:layout_height="116dp"
+        android:gravity="center"
+        android:background="@drawable/button_background"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+
+        <FrameLayout
+            android:id="@+id/playButton"
+            android:layout_width="130dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="162dp"
+            android:layout_marginEnd="162dp"
+            android:background="@drawable/button_background"
+            android:gravity="center"
+            android:padding="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+
+            <ImageView
+                android:id="@+id/playIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="83dp"
+                android:contentDescription="@string/play_icon"
+                android:src="@drawable/play_button_icon" />
+
+
+            <TextView
+                android:id="@+id/shadow2Play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/roboto_black"
+                android:paddingTop="35dp"
+                android:text="@string/play"
+                android:textColor="#2C1C1C"
+                android:textSize="40sp"
+                android:translationY="6dp" />
+
+
+            <TextView
+                android:id="@+id/shadow1Play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/roboto_black"
+                android:paddingTop="35dp"
+                android:text="@string/play"
+                android:textColor="#4E3A3A"
+                android:textSize="40sp"
+                android:translationY="3dp" />
+
+
+            <TextView
+                android:id="@+id/Play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/roboto_black"
+                android:paddingTop="35dp"
+                android:text="@string/play"
+                android:textColor="#FFFFFF"
+                android:textSize="40sp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/leaderboardButton"
+            android:layout_width="125dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="325dp"
+            android:background="@drawable/button_background"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+            <ImageView
+                android:id="@+id/leaderBoardIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="83dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/leaderboard_icon"
+                android:src="@drawable/leaderboard_icon" />
+
+            <TextView
+                android:id="@+id/shadow2Board"
+                android:layout_width="95dp"
+                android:layout_height="98dp"
+                android:layout_gravity="center"
+                android:fontFamily="@font/roboto_black"
+                android:paddingTop="35dp"
+                android:text="@string/leader_board"
+                android:textColor="#2C1C1C"
+                android:textSize="25sp"
+                android:translationY="6dp" />
+
+            <TextView
+                android:id="@+id/shadow1Board"
+                android:layout_width="95dp"
+                android:layout_height="98dp"
+                android:layout_gravity="center"
+                android:fontFamily="@font/roboto_black"
+                android:paddingTop="35dp"
+                android:text="@string/leader_board"
+                android:textColor="#4E3A3A"
+                android:textSize="25sp"
+                android:translationY="3dp" />
+
+            <TextView
+                android:id="@+id/leaderboard"
+                android:layout_width="95dp"
+                android:layout_height="98dp"
+                android:layout_gravity="center"
+                android:fontFamily="@font/roboto_black"
+                android:paddingTop="35dp"
+                android:text="@string/leader_board"
+                android:textColor="#FFFFFF"
+                android:textSize="25sp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/shopButton"
+            android:layout_width="125dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="325dp"
+            android:background="@drawable/button_background"
+            android:gravity="end"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0">
+
+
+            <ImageView
+                android:id="@+id/shopIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="83dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/shop_icon"
+                android:src="@drawable/shop_icon" />
+
+
+            <TextView
+                android:id="@+id/shadow2Shop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/roboto_black"
+                android:paddingTop="35dp"
+                android:text="@string/shop"
+                android:textColor="#2C1C1C"
+                android:textSize="40sp"
+                android:translationY="6dp" />
+
+
+            <TextView
+                android:id="@+id/shadow1Shop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/roboto_black"
+                android:paddingTop="35dp"
+                android:text="@string/shop"
+                android:textColor="#4E3A3A"
+                android:textSize="40sp"
+                android:translationY="3dp" />
+
+
+            <TextView
+                android:id="@+id/shop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/roboto_black"
+                android:paddingTop="35dp"
+                android:text="@string/shop"
+                android:textColor="#FFFFFF"
+                android:textSize="40sp" />
+        </FrameLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,14 +3,19 @@ package com.example.rhythmtapgame;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.gridlayout.widget.GridLayout;
@@ -28,11 +33,18 @@ public class GameActivity extends AppCompatActivity {
     private GridLayout gridLayout;
     private List<BeatTile> beatTiles;
     private TextView timerTextView;
+    private TextView shadow1Timer;
+    private TextView shadow2Timer;
     private CountDownTimer gameTimer;
     private long timeLeftInMillis = 10000;
     private Random random;
     private MediaPlayer mediaPlayer;
-    private TextView levelTextView; // New TextView for the level
+    private TextView levelTextView;
+    private TextView shadow1Level;
+    private TextView shadow2Level;
+    private TextView scoreTextView;
+    private TextView shadow1Score;
+    private TextView shadow2Score;
     private SoundPool soundPool;
     private int freezeSoundId, clearSoundId, addTimeSoundId;
     private int tilePressSoundId1, tilePressSoundId2;
@@ -40,13 +52,14 @@ public class GameActivity extends AppCompatActivity {
     private int correctTaps = 0;
     private int currentLevel = 1; // Track the current level
     private int currentVariation;
+    private int totalScore;
     private static final int[] ROW_COLORS = {
-            Color.parseColor("#921bc7"), // Purple
-            Color.parseColor("#bc2431"), // Red
-            Color.parseColor("#e7d420"), // Yellow
-            Color.parseColor("#21d7cb"), // Cyan
-            Color.parseColor("#334bfb"), // Blue
-            Color.parseColor("#43a42a")  // Green
+            Color.parseColor("#7D60CE"), // Purple
+            Color.parseColor("#D93232"), // Red
+            Color.parseColor("#F9DA66"), // Yellow
+            Color.parseColor("#55E5BA"), // Cyan
+            Color.parseColor("#4C49DD"), // Blue
+            Color.parseColor("#59B937")  // Green
     };
     private CSVProcessor csvProcessor;
     private String currentSong;
@@ -54,11 +67,28 @@ public class GameActivity extends AppCompatActivity {
     private int clearCount = 3;
     private int addTimeCount = 3;
     private boolean isTimerFrozen = false;
+    private boolean isPaused = false;
+    private FrameLayout pauseMenuOverlay;
+    private FrameLayout gameOverMenuOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        pauseMenuOverlay = findViewById(R.id.pauseMenuOverlay);
+        gameOverMenuOverlay = findViewById(R.id.gameOverMenuOverlay);
+        ImageButton pauseButton = findViewById(R.id.pauseButton);
+
+        pauseButton.setOnClickListener(v -> {
+            if (isPaused) {
+                resumeGame();
+            } else {
+                pauseGame();
+            }
+        });
+
+
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -70,8 +100,25 @@ public class GameActivity extends AppCompatActivity {
 
 
         gridLayout = findViewById(R.id.gridLayout);
-        timerTextView = findViewById(R.id.timerTextView);
-        levelTextView = findViewById(R.id.levelTextView); // Initialize the level TextView
+
+        timerTextView = findViewById(R.id.timer);
+        shadow1Timer = findViewById(R.id.shadow1Timer);
+        shadow2Timer = findViewById(R.id.shadow2Timer);
+
+
+        scoreTextView = findViewById(R.id.score);
+        shadow1Score = findViewById(R.id.shadow1Score);
+        shadow2Score = findViewById(R.id.shadow2Score);
+
+
+        levelTextView = findViewById(R.id.levelTextView);
+        shadow1Level = findViewById(R.id.shadow1Level);
+        shadow2Level = findViewById(R.id.shadow2Level);
+
+
+
+
+        // Initialize the level TextView
         beatTiles = new ArrayList<>();
         random = new Random();
 
@@ -86,6 +133,77 @@ public class GameActivity extends AppCompatActivity {
 
 
     }
+
+    private void pauseGame() {
+        isPaused = true;
+
+        // Inflate the pause menu layout if it hasn't been done yet
+        if (pauseMenuOverlay.getChildCount() == 0) {
+            View pauseMenuContent = getLayoutInflater().inflate(R.layout.activity_pause_menu, pauseMenuOverlay, false);
+            pauseMenuOverlay.addView(pauseMenuContent);
+
+            TextView title = pauseMenuContent.findViewById(R.id.pauseTitle);
+            applyGradient(title);
+
+            // Set up button listeners for the pause menu
+            pauseMenuContent.findViewById(R.id.resumeButton).setOnClickListener(v -> resumeGame());
+            pauseMenuContent.findViewById(R.id.mainMenuButtonPause).setOnClickListener(v -> {
+                Intent intent = new Intent(GameActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            });
+
+
+
+        }
+
+        pauseMenuOverlay.setVisibility(View.VISIBLE);
+
+        // Pause game logic
+        soundPool.autoPause();
+        mediaPlayer.pause();
+        gameTimer.cancel();
+
+        gridLayout.setEnabled(false);
+        findViewById(R.id.freezePowerUp).setEnabled(false);
+        findViewById(R.id.clearPowerUp).setEnabled(false);
+        findViewById(R.id.timePowerUp).setEnabled(false);
+    }
+
+
+    private void resumeGame() {
+        isPaused = false;
+        pauseMenuOverlay.setVisibility(View.GONE);
+        soundPool.autoResume();
+        mediaPlayer.start();
+        gameTimer.start();
+        findViewById(R.id.freezePowerUp).setEnabled(true);
+        findViewById(R.id.clearPowerUp).setEnabled(true);
+        findViewById(R.id.timePowerUp).setEnabled(true);
+    }
+
+
+    private int calculateScore(int level, long remainingTimeInMillis, int accuracy) {
+        int basePoints = level * 100;
+        int speedBonus = (int) (remainingTimeInMillis / 1000) * 5;
+
+        // Define multipliers based on accuracy
+        float accuracyMultiplier;
+        if (accuracy >= 95) {
+            accuracyMultiplier = 2.0f;
+        } else if (accuracy >= 85) {
+            accuracyMultiplier = 1.5f;
+        } else if (accuracy >= 70) {
+            accuracyMultiplier = 1.2f;
+        } else {
+            accuracyMultiplier = 1.0f;
+        }
+
+        return (int) ((basePoints + speedBonus) * accuracyMultiplier);
+    }
+
+
+
 
     private void startNewLevel() {
         if (mediaPlayer != null) {
@@ -102,13 +220,29 @@ public class GameActivity extends AppCompatActivity {
         gridLayout.removeAllViews();
 
 
+        int accuracy = (int) (((double) correctTaps / totalTaps) * 100);
+
+        // Calculate score
+        int levelScore = calculateScore(currentLevel, timeLeftInMillis, accuracy);
+
+        totalScore += levelScore;
+
+
+
         // Remove previous views
         setupGrid();
         startGameTimer(7000);
         updatePowerUpCounts();
 
-        String level = "LEVEL " + currentLevel;
-        levelTextView.setText(level); // Update the level TextView
+        String level = "LVL " + currentLevel;
+        levelTextView.setText(level);
+        shadow1Level.setText(level);
+        shadow2Level.setText(level);
+
+        String scoreText = "SCORE: " + totalScore;
+        scoreTextView.setText(scoreText);
+        shadow1Score.setText(scoreText);
+        shadow2Score.setText(scoreText);
 
 
         playBackgroundTrack();
@@ -117,12 +251,37 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
+    private void applyGradient(TextView title) {
+        title.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            if (title.getWidth() > 0 && title.getHeight() > 0) {
+                TextPaint paint = title.getPaint();
+                float width = paint.measureText(title.getText().toString());
+
+                LinearGradient shader = new LinearGradient(
+                        0, 0, width, 0,
+                        new int[]{
+                                Color.parseColor("#D93232"),  // Red color at 0%
+                                Color.parseColor("#9504AC"),  // Purple color at 34%
+                                Color.parseColor("#FFFFFF")   // White color at 100%
+                        },
+                        new float[]{0f, 0.34f, 1f},
+                        Shader.TileMode.CLAMP);
+
+                paint.setShader(shader);
+                title.setTextColor(Color.WHITE); // Set a base color
+                title.invalidate(); // Force redraw
+            }
+        });
+    }
+
+
+
     private void setupGrid() {
         // Grid rows
-        int gridRows = 6;
+        int gridRows = 16;
         gridLayout.setRowCount(gridRows);
         // Grid columns
-        int gridColumns = 16;
+        int gridColumns = 6;
         gridLayout.setColumnCount(gridColumns);
 
 
@@ -172,7 +331,7 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         } else {
-            Log.e("Tile Posititions", "Error: currentTilePositions is null for songId: " + songId + ", currentLevel: " + currentLevel + ", currentVariation: " + currentVariation);
+            Log.e("Tile Positions", "Error: currentTilePositions is null for songId: " + songId + ", currentLevel: " + currentLevel + ", currentVariation: " + currentVariation);
         }
 
 
@@ -240,6 +399,8 @@ public class GameActivity extends AppCompatActivity {
         int seconds = (int) (timeLeftInMillis / 1000) % 60;
         @SuppressLint("DefaultLocale") String timeFormatted = String.format("%2d:%02d", minutes, seconds);
         timerTextView.setText(timeFormatted);
+        shadow1Timer.setText(timeFormatted);
+        shadow2Timer.setText(timeFormatted);
     }
 
     private void getSong() {
@@ -262,7 +423,7 @@ public class GameActivity extends AppCompatActivity {
                 }
                 tile.toggle();
                 if (tile.isActive()) {
-                    tileButton.setBackgroundColor(ROW_COLORS[x]);
+                    tileButton.setBackgroundColor(ROW_COLORS[y]);
                 } else {
                     tileButton.setBackgroundColor(Color.TRANSPARENT);
                     int soundToPlay = random.nextBoolean() ? tilePressSoundId1 : tilePressSoundId2;
@@ -292,18 +453,64 @@ public class GameActivity extends AppCompatActivity {
 
 
     private void showGameOver() {
-        Intent intent = new Intent(GameActivity.this, GameOverActivity.class);
-        int accuracy = (int) (((double) correctTaps / totalTaps) * 100);
-        intent.putExtra("LEVEL", currentLevel); // Pass the current level
-        intent.putExtra("ACCURACY", accuracy);
-        startActivity(intent);
-        onDestroy();
-        finish();
-    }
+        if (gameOverMenuOverlay.getChildCount() == 0) {
+            View gameOverMenuContent = getLayoutInflater().inflate(R.layout.activity_game_over, gameOverMenuOverlay, false);
+            gameOverMenuOverlay.addView(gameOverMenuContent);
 
-    private void showGameWon() {
-        nextLevel();
+            TextView title = gameOverMenuContent.findViewById(R.id.gameOverTitle);
 
+            TextView levelReached = findViewById(R.id.gameOverLevel);
+            TextView levelReached1 = findViewById(R.id.gameOverLevel1);
+            TextView levelReached2 = findViewById(R.id.gameOverLevel2);
+
+
+            TextView lastScore = findViewById(R.id.gameOverScore);
+            TextView lastScore1 = findViewById(R.id.gameOverScore1);
+            TextView lastScore2 = findViewById(R.id.gameOverScore2);
+
+            String level = "LEVEL " + currentLevel;
+
+            levelReached.setText(level);
+            levelReached1.setText(level);
+            levelReached2.setText(level);
+
+
+            String score = "SCORE: " + totalScore;
+
+            lastScore.setText(score);
+            lastScore1.setText(score);
+            lastScore2.setText(score);
+
+
+            applyGradient(title);
+
+            // Set up button listeners for the pause menu
+            gameOverMenuContent.findViewById(R.id.playAgainButton).setOnClickListener(v ->{
+                Intent intent = new Intent(GameActivity.this, GameActivity.class);
+                startActivity(intent);
+                finish();
+            });
+            gameOverMenuContent.findViewById(R.id.mainMenuButtonOver).setOnClickListener(v -> {
+                Intent intent = new Intent(GameActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            });
+
+
+
+        }
+
+        gameOverMenuOverlay.setVisibility(View.VISIBLE);
+
+        // Pause game logic
+        soundPool.release();
+        mediaPlayer.stop();
+        gameTimer.cancel();
+
+        gridLayout.setEnabled(false);
+        findViewById(R.id.freezePowerUp).setEnabled(false);
+        findViewById(R.id.clearPowerUp).setEnabled(false);
+        findViewById(R.id.timePowerUp).setEnabled(false);
     }
 
     private void nextLevel() {

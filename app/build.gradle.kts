@@ -4,6 +4,17 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("C:/Users/espin/Documents/my-release-key.jks")
+        }
+        create("main_share") {
+            storeFile = file("C:\\Users\\espin\\Documents\\my-release-key.jks")
+            storePassword = "AEedam1020budder!"
+            keyAlias = "key0"
+            keyPassword = "Edam1020!"
+        }
+    }
     namespace = "com.example.rhythmtapgame"
     compileSdk = 34
 
@@ -27,6 +38,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("main_share")
+        }
+        getByName("debug") {
+            signingConfig = signingConfigs.getByName("main_share")
         }
     }
     compileOptions {

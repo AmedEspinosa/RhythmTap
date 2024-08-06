@@ -2,83 +2,230 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainGame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#6626EF"
+    android:background="@drawable/gradient_background"
     tools:context=".GameActivity">
 
 
-    <TextView
-        android:id="@+id/levelTextView"
-        android:layout_width="287dp"
-        android:layout_height="45dp"
-        android:layout_gravity="center"
-        android:layout_marginStart="191dp"
-        android:layout_marginTop="260dp"
-        android:layout_marginEnd="190dp"
-        android:layout_marginBottom="7dp"
-        android:fontFamily="@font/orbitron"
-        android:paddingTop="5dp"
-        android:scaleX="2.5"
-        android:scaleY="2.5"
-        android:shadowColor="#000000"
-        android:shadowDx="2"
-        android:shadowDy="10"
-        android:shadowRadius="15"
-        android:text="@string/level_1"
-        android:textAlignment="center"
-        android:textColor="#8A10F9"
-        android:textSize="30sp"
-        android:textStyle="bold"
+    <FrameLayout
+        android:layout_width="192dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="111dp"
+        android:layout_marginEnd="88dp"
+        android:layout_marginBottom="591dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/shadow2TimeLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/time_left"
+            android:textColor="#2C1C1C"
+            android:textSize="21sp"
+            android:translationY="5dp" />
+
+        <TextView
+            android:id="@+id/shadow1TimeLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/time_left"
+            android:textColor="#4E3A3A"
+            android:textSize="21sp"
+            android:translationY="2.5dp" />
+
+        <TextView
+            android:id="@+id/timeLeftText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/time_left"
+            android:textColor="#FFFFFF"
+            android:textSize="21sp" />
+    </FrameLayout>
+
+
+    <ImageButton
+        android:id="@+id/pauseButton"
+        android:layout_width="69dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="272dp"
+        android:layout_marginBottom="650dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/pause_button"
+        android:src="@drawable/pause_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <FrameLayout
+        android:layout_width="166dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="203dp"
+        android:layout_marginBottom="699dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/shadow2Score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/score_1234567"
+            android:textColor="#2C1C1C"
+            android:textSize="21sp"
+            android:translationY="5dp" />
+
+        <TextView
+            android:id="@+id/shadow1Score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/score_1234567"
+            android:textColor="#4E3A3A"
+            android:textSize="21sp"
+            android:translationY="2.5dp" />
+
+        <TextView
+            android:id="@+id/score"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/score_1234567"
+            android:textColor="#FFFFFF"
+            android:textSize="21sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="80dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="228dp"
+        android:layout_marginBottom="698dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/shadow2Level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/lvl_1"
+            android:textColor="#2C1C1C"
+            android:textSize="21sp"
+            android:translationY="5dp" />
+
+        <TextView
+            android:id="@+id/shadow1Level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/lvl_1"
+            android:textColor="#4E3A3A"
+            android:textSize="21sp"
+            android:translationY="2.5dp" />
+
+        <TextView
+            android:id="@+id/levelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/lvl_1"
+            android:textColor="#FFFFFF"
+            android:textSize="21sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="115dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="127dp"
+        android:layout_marginTop="139dp"
+        android:layout_marginEnd="126dp"
+        android:layout_marginBottom="527dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/shadow2Timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/_0_30_"
+            android:textColor="#2C1C1C"
+            android:textSize="48sp"
+            android:translationY="6dp" />
+
+        <TextView
+            android:id="@+id/shadow1Timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/_0_30_"
+            android:textColor="#4E3A3A"
+            android:textSize="48sp"
+            android:translationY="3dp" />
+
+        <TextView
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/_0_30_"
+            android:textColor="#FFFFFF"
+            android:textSize="48sp" />
+    </FrameLayout>
 
     <androidx.gridlayout.widget.GridLayout
         android:id="@+id/gridLayout"
-        android:layout_width="590dp"
-        android:layout_height="209dp"
+        android:layout_width="300dp"
+        android:layout_height="500dp"
         android:layout_gravity="center"
-        android:layout_margin="16dp"
-        android:layout_marginStart="334dp"
-        android:layout_marginTop="153dp"
-        android:layout_marginEnd="652dp"
-
-        android:layout_marginBottom="264dp"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="249dp"
+        android:layout_marginEnd="56dp"
+        android:layout_marginBottom="142dp"
         android:padding="16dp"
         app:alignmentMode="alignMargins"
-        app:columnCount="16"
+        app:columnCount="6"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:rowCount="6" />
-
-    <TextView
-        android:id="@+id/timerTextView"
-        android:layout_width="155dp"
-        android:layout_height="71dp"
-        android:layout_marginStart="266dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="265dp"
-        android:layout_marginBottom="266dp"
-        android:fontFamily="@font/orbitron"
-        android:paddingTop="15dp"
-        android:scaleX="1.5"
-        android:scaleY="2"
-        android:shadowColor="#000000"
-        android:shadowDx="1"
-        android:shadowDy="10"
-        android:shadowRadius="15"
-        android:text="@string/_1_00"
-        android:textAlignment="center"
-        android:textColor="#8A10F9"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintVertical_bias="0.236"
+        app:rowCount="16" />
 
 
     <RelativeLayout
@@ -86,10 +233,12 @@
         android:layout_height="72dp"
 
 
+        android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
 
         <ImageView
             android:id="@+id/freezePowerUp"
@@ -100,6 +249,7 @@
             android:contentDescription="@string/freeze_icon"
             android:src="@drawable/ic_freeze" />
 
+
         <TextView
             android:id="@+id/freezeCount"
             android:layout_width="22dp"
@@ -108,10 +258,12 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="-13dp"
             android:background="@drawable/circle_red"
+            android:fontFamily="@font/roboto_black"
             android:text="@string/freezeCountNum"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="13sp" />
+
 
         <ImageView
             android:id="@+id/clearPowerUp"
@@ -122,6 +274,7 @@
             android:contentDescription="@string/clear_icon"
             android:src="@drawable/ic_clear" />
 
+
         <TextView
             android:id="@+id/clearCount"
             android:layout_width="22dp"
@@ -130,10 +283,12 @@
             android:layout_marginStart="70dp"
             android:layout_marginTop="-13dp"
             android:background="@drawable/circle_red"
+            android:fontFamily="@font/roboto_black"
             android:text="@string/clearCountNum"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="13sp" />
+
 
         <ImageView
             android:id="@+id/timePowerUp"
@@ -144,6 +299,7 @@
             android:contentDescription="@string/add_time_icon"
             android:src="@drawable/ic_time" />
 
+
         <TextView
             android:id="@+id/addCount"
             android:layout_width="22dp"
@@ -152,10 +308,28 @@
             android:layout_marginStart="120dp"
             android:layout_marginTop="-13dp"
             android:background="@drawable/circle_red"
+            android:fontFamily="@font/roboto_black"
             android:text="@string/addCountNum"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="13sp" />
     </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/pauseMenuOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <!-- Pause menu content will be added here programmatically -->
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/gameOverMenuOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+        <!-- Pause menu content will be added here programmatically -->
+    </FrameLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,52 +1,331 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
-    android:padding="16dp">
+    android:background="#99000000"
+    android:clickable="true"
+    android:focusable="true">
 
-    <TextView
-        android:id="@+id/gameOverText"
-        android:layout_width="wrap_content"
+
+    <FrameLayout
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginStart="58dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="59dp"
+        android:layout_marginBottom="459dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/shadow2Title"
+            android:layout_width="220dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/beat_tiles"
+            android:textColor="#2C1C1C"
+            android:textSize="80sp"
+            android:translationY="5dp" />
+
+        <TextView
+            android:id="@+id/shadow1Title"
+            android:layout_width="220dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/beat_tiles"
+            android:textColor="#4E3A3A"
+            android:textSize="80sp"
+            android:translationY="2.5dp" />
+
+        <TextView
+            android:id="@+id/gameOverTitle"
+            android:layout_width="220dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/beat_tiles"
+            android:textSize="80sp" />
+    </FrameLayout>
+
+
+    <!-- Auto layout, variables, and unit scale are not yet supported -->
+
+
+    <FrameLayout
+        android:layout_width="300dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="34dp"
+        android:layout_marginTop="271dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="382dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/shadow2PressPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/game_over"
+            android:textColor="#2C1C1C"
+            android:textSize="35sp"
+            android:translationY="6dp" />
+
+        <TextView
+            android:id="@+id/shadow1PressPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/game_over"
+            android:textColor="#4E3A3A"
+            android:textSize="35sp"
+            android:translationY="3dp" />
+
+        <TextView
+            android:id="@+id/PressPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/game_over"
+            android:textColor="#FFFFFF"
+            android:textSize="35sp" />
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="@string/game_over"
-        android:textSize="24sp"
-        android:textColor="@android:color/white"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp" />
+        android:layout_marginStart="79dp"
+        android:layout_marginTop="344dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="345dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/levelTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textColor="@android:color/white" />
+        <TextView
+            android:id="@+id/gameOverLevel2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/level_25"
+            android:textColor="#2C1C1C"
+            android:textSize="25sp"
+            android:translationY="6dp" />
 
-    <TextView
-        android:id="@+id/accuracyTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="16dp" />
+        <TextView
+            android:id="@+id/gameOverLevel1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/level_25"
+            android:textColor="#4E3A3A"
+            android:textSize="25sp"
+            android:translationY="3dp" />
+
+        <TextView
+            android:id="@+id/gameOverLevel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/level_25"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="79dp"
+        android:layout_marginTop="387dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="276dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/gameOverScore2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/score_1234567"
+            android:textColor="#2C1C1C"
+            android:textSize="25sp"
+            android:translationY="6dp" />
+
+        <TextView
+            android:id="@+id/gameOverScore1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/score_1234567"
+            android:textColor="#4E3A3A"
+            android:textSize="25sp"
+            android:translationY="3dp" />
+
+        <TextView
+            android:id="@+id/gameOverScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/score_1234567"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="325dp"
+        android:layout_height="102dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="459dp"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="160dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
 
-    <Button
-        android:id="@+id/restartButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/restart"
-        android:layout_below="@id/gameOverText"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
+        <View
+            android:id="@+id/rectangle_1_shadow"
+            android:layout_width="288dp"
+            android:layout_height="73dp"
+            android:layout_gravity="center"
+            android:background="#4E3A3A"
+            android:translationY="2.5dp"
+            tools:layout_editor_absoluteX="39dp"
+            tools:layout_editor_absoluteY="360dp" />
 
-    <Button
-        android:id="@+id/mainMenuButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/main_menu"
-        android:layout_below="@id/restartButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp" />
 
-</RelativeLayout>
+        <View
+            android:id="@+id/playAgainButton"
+            android:layout_width="290dp"
+            android:layout_height="73dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rectangle_1"
+            tools:layout_editor_absoluteX="39dp"
+            tools:layout_editor_absoluteY="360dp" />
+
+        <TextView
+            android:id="@+id/playagain2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/play_again"
+            android:textColor="#2C1C1C"
+            android:textSize="40sp"
+            android:translationY="6dp" />
+
+        <TextView
+            android:id="@+id/playAgain1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/play_again"
+            android:textColor="#4E3A3A"
+            android:textSize="40sp"
+            android:translationY="3dp" />
+
+        <TextView
+            android:id="@+id/playAgain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/play_again"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="325dp"
+        android:layout_height="102dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="561dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="59dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <View
+            android:id="@+id/rectangle_3_shadow"
+            android:layout_width="288dp"
+            android:layout_height="73dp"
+            android:layout_gravity="center"
+            android:background="#4E3A3A"
+            android:translationY="2.5dp"
+            tools:layout_editor_absoluteX="39dp"
+            tools:layout_editor_absoluteY="360dp" />
+
+
+        <View
+            android:id="@+id/mainMenuButtonOver"
+            android:layout_width="290dp"
+            android:layout_height="73dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rectangle_3"
+            tools:layout_editor_absoluteX="39dp"
+            tools:layout_editor_absoluteY="360dp" />
+
+        <TextView
+            android:id="@+id/shadow2Menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/main_menu_pause"
+            android:textColor="#2C1C1C"
+            android:textSize="40sp"
+            android:translationY="6dp" />
+
+        <TextView
+            android:id="@+id/shadow1Menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/main_menu_pause"
+            android:textColor="#4E3A3A"
+            android:textSize="40sp"
+            android:translationY="3dp" />
+
+        <TextView
+            android:id="@+id/pauseMainMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/main_menu_pause"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp" />
+
+    </FrameLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
