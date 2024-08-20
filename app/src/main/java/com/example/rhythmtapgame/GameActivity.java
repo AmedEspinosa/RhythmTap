@@ -2,6 +2,7 @@ package com.example.rhythmtapgame;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
@@ -14,15 +15,26 @@ import android.text.TextPaint;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
+
+
+
+
 
 import androidx.gridlayout.widget.GridLayout;
 
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.games.PlayGames;
+import com.google.android.gms.games.PlayGamesSdk;
 
 import java.util.ArrayList;
 
@@ -67,18 +79,52 @@ public class GameActivity extends AppCompatActivity {
     private int clearCount = 3;
     private int addTimeCount = 3;
     private boolean isTimerFrozen = false;
+    private Handler freezeHandler = new Handler();
+    private Runnable unfreezeRunnable = () -> {
+        isTimerFrozen = false;
+        startGameTimer(0);
+    };
     private boolean isPaused = false;
     private FrameLayout pauseMenuOverlay;
     private FrameLayout gameOverMenuOverlay;
+    private long timeRemainingOnPause;
+    CurrencyManager currencyManager;
+    private SharedPreferences sharedPreferences;
+    List<Integer> soundIDs;
+    private FrameLayout settingOverlay;
+    View pauseMenuContent;
+
+
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+            Log.e("Leaderboard", "Uncaught exception", throwable);
+        });
+
+        PlayGamesSdk.initialize(this);
+
+
+        sharedPreferences = getSharedPreferences("GameSettings", MODE_PRIVATE);
+
+
+
+        currencyManager = new CurrencyManager(this);
+
         pauseMenuOverlay = findViewById(R.id.pauseMenuOverlay);
         gameOverMenuOverlay = findViewById(R.id.gameOverMenuOverlay);
         ImageButton pauseButton = findViewById(R.id.pauseButton);
+
+        pauseMenuContent = getLayoutInflater().inflate(R.layout.activity_pause_menu, pauseMenuOverlay, false);
+
+
 
         pauseButton.setOnClickListener(v -> {
             if (isPaused) {
@@ -94,7 +140,7 @@ public class GameActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-
+        checkSignInStatus();
         csvProcessor = new CSVProcessor();
         setupPowerUpButtons();
 
@@ -122,14 +168,31 @@ public class GameActivity extends AppCompatActivity {
         beatTiles = new ArrayList<>();
         random = new Random();
 
-        soundPool = new SoundPool.Builder().setMaxStreams(2).build();
+        soundPool = new SoundPool.Builder().setMaxStreams(10).build();
         freezeSoundId = soundPool.load(this, R.raw.freeze_sound, 1);
         clearSoundId = soundPool.load(this, R.raw.clear_sound, 1);
         addTimeSoundId = soundPool.load(this, R.raw.add_time_sound, 1);
-        tilePressSoundId1 = soundPool.load(this,R.raw.bubble_1,1);
-        tilePressSoundId2 = soundPool.load(this,R.raw.bubble_2,1);
+        tilePressSoundId1 = soundPool.load(this,R.raw.bubble_1,0);
+        tilePressSoundId2 = soundPool.load(this,R.raw.bubble_2,0);
+
+
+
+
+       soundIDs = new ArrayList<>();
+
+        soundIDs.add(R.raw.freeze_sound);
+        soundIDs.add(R.raw.clear_sound);
+        soundIDs.add(R.raw.add_time_sound);
+        soundIDs.add(R.raw.bubble_1);
+        soundIDs.add(R.raw.bubble_2);
+
+
+
+
 
         startNewLevel();
+
+
 
 
     }
@@ -139,14 +202,29 @@ public class GameActivity extends AppCompatActivity {
 
         // Inflate the pause menu layout if it hasn't been done yet
         if (pauseMenuOverlay.getChildCount() == 0) {
-            View pauseMenuContent = getLayoutInflater().inflate(R.layout.activity_pause_menu, pauseMenuOverlay, false);
             pauseMenuOverlay.addView(pauseMenuContent);
 
             TextView title = pauseMenuContent.findViewById(R.id.pauseTitle);
             applyGradient(title);
 
+
+            settingOverlay = pauseMenuContent.findViewById(R.id.settingsMenuOverlay);
+
+
+
             // Set up button listeners for the pause menu
             pauseMenuContent.findViewById(R.id.resumeButton).setOnClickListener(v -> resumeGame());
+            pauseMenuContent.findViewById(R.id.settingsMenuButton).setOnClickListener(v -> {
+                pauseMenuContent.findViewById(R.id.resumeButton).setEnabled(false);
+                pauseMenuContent.findViewById(R.id.settingsMenuButton).setEnabled(false);
+                pauseMenuContent.findViewById(R.id.mainMenuButtonPause).setEnabled(false);
+
+                showSettingsMenu();
+
+
+
+            });
+
             pauseMenuContent.findViewById(R.id.mainMenuButtonPause).setOnClickListener(v -> {
                 Intent intent = new Intent(GameActivity.this, MainActivity.class);
                 startActivity(intent);
@@ -157,12 +235,16 @@ public class GameActivity extends AppCompatActivity {
 
         }
 
+        if (gameTimer != null) {
+            gameTimer.cancel();
+            timeRemainingOnPause = timeLeftInMillis;
+        }
+
         pauseMenuOverlay.setVisibility(View.VISIBLE);
 
         // Pause game logic
         soundPool.autoPause();
         mediaPlayer.pause();
-        gameTimer.cancel();
 
         gridLayout.setEnabled(false);
         findViewById(R.id.freezePowerUp).setEnabled(false);
@@ -171,21 +253,142 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
+    private void showSettingsMenu() {
+        // Inflate the settings menu layout if it hasn't been done yet
+
+
+        if (settingOverlay.getChildCount() == 0) {
+            View settingsMenuContent = getLayoutInflater().inflate(R.layout.settings_activity, settingOverlay, false);
+            settingOverlay.addView(settingsMenuContent);
+
+            // Initialize settings UI components
+            setupSettingsMenu(settingsMenuContent);
+        }
+
+        settingOverlay.setVisibility(View.VISIBLE);
+    }
+
+
+    private void setupSettingsMenu(View settingsMenuContent) {
+        SeekBar musicSeekBar = settingsMenuContent.findViewById(R.id.music_volume);
+        SeekBar soundEffectsSeekBar = settingsMenuContent.findViewById(R.id.sound_effects_volume);
+        CheckBox musicCheckBox = settingsMenuContent.findViewById(R.id.musicCheckBox);
+        CheckBox soundEffectsCheckBox = settingsMenuContent.findViewById(R.id.soundEffectCheckBox);
+        View saveButton = settingsMenuContent.findViewById(R.id.saveButton);
+        View exitButton = settingsMenuContent.findViewById(R.id.exitButton);
+        TextView settingsSavedMessage = settingsMenuContent.findViewById(R.id.save_success_text);
+
+        TextView soundEffectPercent = settingsMenuContent.findViewById(R.id.sound_effects_percentage);
+        TextView musicPercent = settingsMenuContent.findViewById(R.id.music_percentage);
+
+        // Load and apply settings
+        loadSettings(musicSeekBar, soundEffectsSeekBar, musicCheckBox, soundEffectsCheckBox, soundEffectPercent, musicPercent);
+
+        saveButton.setOnClickListener(view -> {
+            saveSettings(musicSeekBar, soundEffectsSeekBar, musicCheckBox, soundEffectsCheckBox, settingsSavedMessage, soundEffectPercent, musicPercent);
+        });
+
+
+        exitButton.setOnClickListener(view ->  {
+
+            pauseMenuContent.findViewById(R.id.resumeButton).setEnabled(true);
+            pauseMenuContent.findViewById(R.id.settingsMenuButton).setEnabled(true);
+            pauseMenuContent.findViewById(R.id.mainMenuButtonPause).setEnabled(true);
+            settingOverlay.setVisibility(View.GONE);
+        });
+    }
+
+    private void loadSettings(SeekBar musicSeekBar, SeekBar soundEffectsSeekBar, CheckBox musicCheckBox, CheckBox soundEffectsCheckBox, TextView soundEffectPercent, TextView musicPercent) {
+        int musicVolume = sharedPreferences.getInt("musicVolume", 100);
+        int soundEffectsVolume = sharedPreferences.getInt("soundEffectsVolume", 100);
+        boolean isMusicOn = sharedPreferences.getBoolean("isMusicOn", true);
+        boolean isSoundEffectsOn = sharedPreferences.getBoolean("isSoundEffectsOn", true);
+
+        musicSeekBar.setProgress(musicVolume);
+        soundEffectsSeekBar.setProgress(soundEffectsVolume);
+        musicCheckBox.setChecked(isMusicOn);
+        soundEffectsCheckBox.setChecked(isSoundEffectsOn);
+
+        String soundEffectText = soundEffectsVolume + "%";
+        String musicText = musicVolume + "%";
+
+        soundEffectPercent.setText(soundEffectText);
+        musicPercent.setText(musicText);
+
+        musicSeekBar.setEnabled(isMusicOn);
+        soundEffectsSeekBar.setEnabled(isSoundEffectsOn);
+    }
+
+
+    private void saveSettings(SeekBar musicSeekBar, SeekBar soundEffectsSeekBar, CheckBox musicCheckBox, CheckBox soundEffectsCheckBox, TextView settingsSavedMessage, TextView soundEffectPercent, TextView musicPercent) {
+        SharedPreferences sharedPreferences = getSharedPreferences("GameSettings", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        int musicVolume = musicCheckBox.isChecked() ? musicSeekBar.getProgress() : 0;
+        int soundEffectsVolume = soundEffectsCheckBox.isChecked() ? soundEffectsSeekBar.getProgress() : 0;
+        boolean isMusicOn = musicCheckBox.isChecked();
+        boolean isSoundEffectsOn = soundEffectsCheckBox.isChecked();
+
+
+        String soundEffectText = soundEffectsVolume + "%";
+        String musicText = musicVolume + "%";
+
+        soundEffectPercent.setText(soundEffectText);
+        musicPercent.setText(musicText);
+
+
+        settingsSavedMessage.setVisibility(View.VISIBLE);
+
+        new Handler().postDelayed(() -> settingsSavedMessage.setVisibility(View.GONE), 2000);
+
+
+        editor.putInt("musicVolume", musicVolume);
+        editor.putInt("soundEffectsVolume", soundEffectsVolume);
+        editor.putBoolean("isMusicOn", isMusicOn);
+        editor.putBoolean("isSoundEffectsOn", isSoundEffectsOn);
+        editor.putString("soundEffectPercent", soundEffectText);
+        editor.putString("musicPercent",musicText);
+        editor.apply();
+
+        applySettings();  // Apply settings immediately after saving
+    }
+
+    private void applySettings() {
+        SharedPreferences sharedPreferences = getSharedPreferences("GameSettings", MODE_PRIVATE);
+        int musicVolume = sharedPreferences.getInt("musicVolume", 100);
+        int soundEffectsVolume = sharedPreferences.getInt("soundEffectsVolume", 100);
+
+        // Assuming you have methods to update volume in your SoundPool and MediaPlayer
+
+        for (Integer ids : soundIDs) {
+            soundPool.setVolume(ids,soundEffectsVolume,soundEffectsVolume);
+        }
+
+
+        mediaPlayer.setVolume(musicVolume / 100f, musicVolume / 100f);
+    }
+
+
     private void resumeGame() {
         isPaused = false;
         pauseMenuOverlay.setVisibility(View.GONE);
         soundPool.autoResume();
         mediaPlayer.start();
-        gameTimer.start();
+        timeLeftInMillis = timeRemainingOnPause;
+        startGameTimer(0);
         findViewById(R.id.freezePowerUp).setEnabled(true);
         findViewById(R.id.clearPowerUp).setEnabled(true);
         findViewById(R.id.timePowerUp).setEnabled(true);
     }
 
 
+
+
+
+
     private int calculateScore(int level, long remainingTimeInMillis, int accuracy) {
-        int basePoints = level * 100;
-        int speedBonus = (int) (remainingTimeInMillis / 1000) * 5;
+        int basePoints = level * 10;
+        int speedBonus = (int) (remainingTimeInMillis / 1000) * 2;
 
         // Define multipliers based on accuracy
         float accuracyMultiplier;
@@ -227,11 +430,15 @@ public class GameActivity extends AppCompatActivity {
 
         totalScore += levelScore;
 
+        if (isTimerFrozen) {
+            freezeHandler.removeCallbacks(unfreezeRunnable);
+            isTimerFrozen = false;
+        }
 
 
         // Remove previous views
         setupGrid();
-        startGameTimer(7000);
+        startGameTimer(5000);
         updatePowerUpCounts();
 
         String level = "LVL " + currentLevel;
@@ -246,6 +453,10 @@ public class GameActivity extends AppCompatActivity {
 
 
         playBackgroundTrack();
+
+        applySettings();
+
+
 
 
     }
@@ -389,6 +600,7 @@ public class GameActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
+                submitScoreToLeaderboard(totalScore);
                 showGameOver();
             }
         }.start();
@@ -414,6 +626,14 @@ public class GameActivity extends AppCompatActivity {
 
     }
 
+    private void playSound(int id) {
+        int soundEffectsVolume = sharedPreferences.getInt("soundEffectsVolume", 100);
+        soundPool.play(id,soundEffectsVolume /100f,soundEffectsVolume /100f,0,0,1);
+
+    }
+
+
+
     private void onTileTapped(Button tileButton, int x, int y) {
         for (BeatTile tile : beatTiles) {
             if (tile.getX() == x && tile.getY() == y) {
@@ -427,7 +647,7 @@ public class GameActivity extends AppCompatActivity {
                 } else {
                     tileButton.setBackgroundColor(Color.TRANSPARENT);
                     int soundToPlay = random.nextBoolean() ? tilePressSoundId1 : tilePressSoundId2;
-                    soundPool.play(soundToPlay, 0.25f, 0.25f, 0, 0, 1);
+                    playSound(soundToPlay);
                     correctTaps++;
                     totalTaps++;
                 }
@@ -458,6 +678,9 @@ public class GameActivity extends AppCompatActivity {
             gameOverMenuOverlay.addView(gameOverMenuContent);
 
             TextView title = gameOverMenuContent.findViewById(R.id.gameOverTitle);
+
+
+
 
             TextView levelReached = findViewById(R.id.gameOverLevel);
             TextView levelReached1 = findViewById(R.id.gameOverLevel1);
@@ -513,6 +736,33 @@ public class GameActivity extends AppCompatActivity {
         findViewById(R.id.timePowerUp).setEnabled(false);
     }
 
+
+    private void submitScoreToLeaderboard(int score) {
+        if (PlayGames.getGamesSignInClient(this).isAuthenticated().isSuccessful()) {
+            Log.d("Leaderboard", "Submitting score: " + score);
+            PlayGames.getLeaderboardsClient(this)
+                    .submitScore(getString(R.string.leaderboard_id), score);
+        } else {
+            Log.e("Leaderboard", "User is not signed in, cannot submit score.");
+            // Optionally, prompt the user to sign in
+        }
+    }
+
+
+    private void checkSignInStatus() {
+        PlayGames.getGamesSignInClient(this).isAuthenticated()
+                .addOnCompleteListener(task -> {
+                    boolean isSignedIn = task.isSuccessful() && task.getResult().isAuthenticated();
+                    if (isSignedIn) {
+                        Log.d("Leaderboard", "User is signed in");
+
+                    } else {
+                        Log.e("Leaderboard", "User is not signed in");
+                        // Prompt the user to sign in
+                    }
+                });
+    }
+
     private void nextLevel() {
         currentLevel++;
         startNewLevel();
@@ -542,12 +792,11 @@ public class GameActivity extends AppCompatActivity {
             freezeCount--;
             isTimerFrozen = true;
             gameTimer.cancel();
-            soundPool.play(freezeSoundId,1, 1, 0, 0, 1);
+            playSound(freezeSoundId);
+
             long freezeDuration = 10000;
-            new Handler().postDelayed(() -> {
-                isTimerFrozen = false;
-                startGameTimer(0);
-            }, freezeDuration);
+            freezeHandler.postDelayed(unfreezeRunnable, freezeDuration);
+
             updatePowerUpCounts();
         }
     }
@@ -557,7 +806,7 @@ public class GameActivity extends AppCompatActivity {
             clearCount--;
             currentLevel++;
             gameTimer.cancel();
-            soundPool.play(clearSoundId,1, 1, 0, 0, 1);
+            playSound(clearSoundId);
             startNewLevel();
             updatePowerUpCounts();
         }
@@ -567,7 +816,7 @@ public class GameActivity extends AppCompatActivity {
         if (addTimeCount > 0) {
             addTimeCount--;
             gameTimer.cancel();
-            soundPool.play(addTimeSoundId,0.25f, 0.25f, 0, 0, 1);
+            playSound(addTimeSoundId);
             startGameTimer(15000);
             updatePowerUpCounts();
         }

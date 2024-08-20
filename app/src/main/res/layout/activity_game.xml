@@ -320,7 +320,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
-        <!-- Pause menu content will be added here programmatically -->
     </FrameLayout>
 
     <FrameLayout
@@ -328,8 +327,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
-        <!-- Pause menu content will be added here programmatically -->
     </FrameLayout>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

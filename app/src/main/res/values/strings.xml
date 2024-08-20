@@ -55,4 +55,14 @@
     <string name="paused">PAUSED</string>
     <string name="level_25">LEVEL 25</string>
     <string name="play_again">PLAY AGAIN</string>
+    <string name="sign_in">SIGN IN</string>
+    <string name="app_id">360829953210</string>
+    <string name="leaderboard_id">CgkIusmQmcAKEAIQAQ</string>
+    <string name="clipboard">clipboard</string>
+    <string name="_1">1</string>
+    <string name="player_name">Player Name</string>
+    <string name="_10000">10000</string>
+    <string name="settings">SETTINGS</string>
+    <string name="settings_saved_successfully">SETTINGS SAVED SUCCESSFULLY</string>
+
 </resources>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#99000000"
+    android:background="#CC000000"
     android:clickable="true"
     android:focusable="true">
 
@@ -98,10 +98,10 @@
     </FrameLayout>
 
     <FrameLayout
-        android:layout_width="325dp"
-        android:layout_height="102dp"
+        android:layout_width="280dp"
+        android:layout_height="70dp"
         android:layout_marginStart="21dp"
-        android:layout_marginTop="336dp"
+        android:layout_marginTop="300dp"
         android:layout_marginEnd="21dp"
         android:layout_marginBottom="287dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -166,10 +166,77 @@
 
 
     <FrameLayout
-        android:layout_width="325dp"
-        android:layout_height="102dp"
+        android:layout_width="280dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="390dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginBottom="210dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <View
+            android:id="@+id/rectangle_6_shadow"
+            android:layout_width="288dp"
+            android:layout_height="73dp"
+            android:layout_gravity="center"
+            android:background="#4E3A3A"
+            android:translationY="2.5dp"
+            tools:layout_editor_absoluteX="39dp"
+            tools:layout_editor_absoluteY="360dp" />
+
+
+        <View
+            android:id="@+id/settingsMenuButton"
+            android:layout_width="290dp"
+            android:layout_height="73dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rectangle_6"
+            tools:layout_editor_absoluteX="39dp"
+            tools:layout_editor_absoluteY="360dp" />
+
+        <TextView
+            android:id="@+id/shadow2Settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="SETTINGS"
+            android:textColor="#2C1C1C"
+            android:textSize="40sp"
+            android:translationY="6dp" />
+
+        <TextView
+            android:id="@+id/shadow1Settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="SETTINGS"
+            android:textColor="#4E3A3A"
+            android:textSize="40sp"
+            android:translationY="3dp" />
+
+        <TextView
+            android:id="@+id/settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="SETTINGS"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="280dp"
+        android:layout_height="70dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="448dp"
+        android:layout_marginTop="515dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="172dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -234,10 +301,10 @@
 
 
     <FrameLayout
-        android:layout_width="325dp"
-        android:layout_height="102dp"
+        android:layout_width="280dp"
+        android:layout_height="70dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="561dp"
+        android:layout_marginTop="565dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="59dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -299,6 +366,13 @@
             android:textSize="40sp" />
 
     </FrameLayout>
+
+
+    <FrameLayout
+        android:id="@+id/settingsMenuOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

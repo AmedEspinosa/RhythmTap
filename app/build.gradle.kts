@@ -43,6 +43,9 @@ android {
         getByName("debug") {
             signingConfig = signingConfigs.getByName("main_share")
         }
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("main_share")
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -65,7 +68,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -79,6 +81,9 @@ dependencies {
     implementation(libs.androidx.gridlayout)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.commons.csv)
+    implementation(libs.play.services.auth)
+    implementation(libs.play.services.games.v2)
+    implementation(libs.androidx.recyclerview)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -86,6 +91,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 
 
 }

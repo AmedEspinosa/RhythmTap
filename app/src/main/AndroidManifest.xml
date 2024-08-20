@@ -14,12 +14,14 @@
         tools:targetApi="31">
         <activity
             android:name=".GameActivity"
+            android:screenOrientation="nosensor"
             android:exported="true"
             android:theme="@style/Theme.RhythmTapGame">
         </activity>
 
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="nosensor"
             android:theme="@style/Theme.RhythmTapGame"
             android:exported="true">
             <intent-filter>
@@ -29,6 +31,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".LeaderboardActivity"
+            android:screenOrientation="nosensor"
+            android:exported="true"
+            android:theme="@style/Theme.RhythmTapGame">
+        </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:screenOrientation="nosensor"
+            android:exported="true"
+            android:theme="@style/Theme.RhythmTapGame">
+        </activity>
+
+        <meta-data android:name="com.google.android.gms.games.APP_ID"
+            android:value="@string/app_id" />
 
 
     </application>

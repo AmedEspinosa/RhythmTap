@@ -1,0 +1,9 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#7D60CE" /> <!-- Thumb color -->
+            <size android:width="20dp" android:height="50dp" /> <!-- Size of the thumb -->
+             /> <!-- Rounded corners -->
+        </shape>
+    </item>
+</layer-list>

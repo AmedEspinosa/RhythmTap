@@ -2,6 +2,7 @@ package com.example.rhythmtapgame;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -30,15 +31,24 @@ public class BouncingSquaresView extends View {
     private SoundPool soundPool;
     private List<Integer> bounceSound;
     private int id = 1;
+    private SharedPreferences sharedPreferences;
 
     public BouncingSquaresView(Context context) {
         super(context);
         initSoundPool(context);
+        loadSettings(context);
+
     }
 
     public BouncingSquaresView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initSoundPool(context);
+        loadSettings(context);
+
+    }
+
+    private void loadSettings(Context context) {
+        sharedPreferences = context.getSharedPreferences("GameSettings", Context.MODE_PRIVATE);
     }
 
 
@@ -68,6 +78,8 @@ public class BouncingSquaresView extends View {
                 Log.e(context.getPackageName(), "Sound file not found: " + name);
             }
         }
+
+
     }
 
     @Override
@@ -166,12 +178,19 @@ public class BouncingSquaresView extends View {
     }
 
 
+
+
+
+
     private void playBounceSound() {
+        boolean isSoundEffectsOn = sharedPreferences.getBoolean("isSoundEffectsOn", true);
+        int soundEffectsVolume = sharedPreferences.getInt("soundEffectsVolume", 100);
+
+
         if (id < 27) {
-            if (!bounceSound.isEmpty()) {
+            if (!bounceSound.isEmpty() && isSoundEffectsOn) {
                 int soundId = bounceSound.get(id);
-                Log.e("SoundPool", "Playing sound with ID: " + soundId);
-                int result = soundPool.play(soundId, 1, 1, 0, 0, 1);
+                int result = soundPool.play(soundId, soundEffectsVolume /100f, soundEffectsVolume/100f, 0, 0, 1);
                 if (result == 0) {
                     Log.e("SoundPool", "Failed to play sound with ID: " + soundId);
                 }
@@ -181,7 +200,13 @@ public class BouncingSquaresView extends View {
         } else
             id = 1;
         int soundId = bounceSound.get(id);
-        soundPool.play(soundId, 0.05f, 0.05f, 0, 0, 1);
+        soundPool.play(soundId, soundEffectsVolume/100f, soundEffectsVolume/100f, 0, 0, 1);
+    }
+
+    public void updateVolume(float volume) {
+        for (Integer ids : bounceSound) {
+            soundPool.setVolume(ids,volume,volume);
+        }
     }
 
 
@@ -197,4 +222,6 @@ public class BouncingSquaresView extends View {
         }
 
     }
+
+
 }
