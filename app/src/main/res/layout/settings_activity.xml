@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#CC000000">
+    android:background="#E6000000">
 
 
     <TextView
@@ -30,20 +30,18 @@
         android:visibility="gone"/>
 
 
-
     <TextView
         android:id="@+id/sound_effects_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/settings_title"
-        android:layout_marginTop="40dp"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="130dp"
-        android:text="Sound Effects"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="41dp"
         android:fontFamily="@font/roboto_black"
+        android:text="@string/sound_effects"
         android:textColor="#FFFFFF"
-        android:textSize="18sp"/>
-
+        android:textSize="18sp" />
 
     <CheckBox
         android:id="@+id/soundEffectCheckBox"
@@ -75,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/sound_effects_volume"
         android:layout_centerHorizontal="true"
-        android:text="80%"
+        android:text="@string/_80"
         android:fontFamily="@font/roboto_black"
         android:textColor="#FFFFFF"
         android:textSize="16sp"/>
@@ -87,8 +85,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/sound_effects_percentage"
         android:layout_marginTop="40dp"
-        android:layout_marginStart="160dp"
-        android:text="Music"
+        android:layout_marginStart="155dp"
+        android:text="@string/music"
         android:textColor="#FFFFFF"
         android:fontFamily="@font/roboto_black"
         android:textSize="18sp"/>
@@ -127,7 +125,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/music_volume"
         android:layout_centerHorizontal="true"
-        android:text="80%"
+        android:text="@string/_80"
         android:fontFamily="@font/roboto_black"
         android:textColor="#FFFFFF"
         android:textSize="16sp"/>
@@ -167,7 +165,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="SAVE"
+            android:text="@string/save"
             android:textColor="#2C1C1C"
             android:textSize="40sp"
             android:translationY="6dp" />
@@ -178,7 +176,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="SAVE"
+            android:text="@string/save"
             android:textColor="#4E3A3A"
             android:textSize="40sp"
             android:translationY="3dp" />
@@ -188,7 +186,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="SAVE"
+            android:text="@string/save"
             android:textColor="#FFFFFF"
             android:textSize="40sp" />
 
@@ -225,7 +223,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="EXIT"
+            android:text="@string/exit"
             android:textColor="#2C1C1C"
             android:textSize="40sp"
             android:translationY="6dp" />
@@ -236,7 +234,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="EXIT"
+            android:text="@string/exit"
             android:textColor="#4E3A3A"
             android:textSize="40sp"
             android:translationY="3dp" />
@@ -247,7 +245,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="EXIT"
+            android:text="@string/exit"
             android:textColor="#FFFFFF"
             android:textSize="40sp" />
 

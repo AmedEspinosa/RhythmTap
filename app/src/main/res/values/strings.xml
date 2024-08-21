@@ -64,5 +64,31 @@
     <string name="_10000">10000</string>
     <string name="settings">SETTINGS</string>
     <string name="settings_saved_successfully">SETTINGS SAVED SUCCESSFULLY</string>
+    <string name="_80">80%</string>
+    <string name="save">SAVE</string>
+    <string name="exit">EXIT</string>
+    <string name="music">MUSIC</string>
+    <string name="sound_effects">SOUND EFFECTS</string>
+    <string name="rank_1">RANK 1</string>
+    <string name="rank_11">RANK 11</string>
+    <string name="rank_up">RANK UP!</string>
+    <string name="xp_123456789">XP 123456789</string>
+    <string name="use_life">USE LIFE?</string>
+    <string name="xp_progress_num">123456788/123456789</string>
+    <string name="rewards">REWARDS</string>
+    <string name="_10">10</string>
+    <string name="accept">ACCEPT</string>
+    <string name="leaderboard">LEADERBOARD</string>
+    <string name="player_1">PLAYER 1</string>
+    <string name="_1234567">1234567</string>
+    <string name="_2">2</string>
+    <string name="player_2">PLAYER 2</string>
+    <string name="_3">3</string>
+    <string name="player_3">PLAYER 3</string>
+    <string name="rank">RANK</string>
+    <string name="_11">11</string>
+    <string name="next_rank">NEXT RANK</string>
+    <string name="beat_coin_icon">Beat Coin Icon</string>
+    <string name="_1000">1000</string>
 
 </resources>

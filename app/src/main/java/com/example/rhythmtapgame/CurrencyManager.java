@@ -13,33 +13,26 @@ public class CurrencyManager {
         sharedPreferences = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
     }
 
-    // Get the current Beat Coins balance
     public int getBeatCoins() {
         return sharedPreferences.getInt(BEAT_COINS_KEY, 0);
     }
 
-    // Add Beat Coins to the balance
     public void addBeatCoins(int amount) {
         int currentBalance = getBeatCoins();
         sharedPreferences.edit().putInt(BEAT_COINS_KEY, currentBalance + amount).apply();
     }
 
-    // Spend Beat Coins from the balance
     public boolean spendBeatCoins(int amount) {
         int currentBalance = getBeatCoins();
         if (currentBalance >= amount) {
             sharedPreferences.edit().putInt(BEAT_COINS_KEY, currentBalance - amount).apply();
-            return true; // Purchase successful
+            return true;
         } else {
-            return false; // Not enough coins
+            return false;
         }
     }
 
-    // Set the Beat Coins balance (for debugging/testing purposes)
     public void setBeatCoins(int amount) {
         sharedPreferences.edit().putInt(BEAT_COINS_KEY, amount).apply();
     }
-
-
-
 }

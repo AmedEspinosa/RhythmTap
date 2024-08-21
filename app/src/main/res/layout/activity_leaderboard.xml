@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="LEADERBOARD"
+            android:text="@string/leaderboard"
             android:textColor="#2C1C1C"
             android:textSize="48sp"
             android:translationY="4dp" />
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="LEADERBOARD"
+            android:text="@string/leaderboard"
             android:textColor="#4E3A3A"
             android:textSize="48sp"
             android:translationY="2dp" />
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="LEADERBOARD"
+            android:text="@string/leaderboard"
             android:textColor="#FFFFFF"
             android:textSize="48sp" />
     </FrameLayout>
@@ -82,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="1"
+                    android:text="@string/_1"
                     android:textColor="#2C1C1C"
                     android:textSize="40sp"
                     android:translationY="6dp" />
@@ -92,7 +92,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="1"
+                    android:text="@string/_1"
                     android:textColor="#4E3A3A"
                     android:textSize="40sp"
                     android:translationY="3dp" />
@@ -102,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="1"
+                    android:text="@string/_1"
                     android:textColor="#FFFFFF"
                     android:textSize="40sp" />
 
@@ -139,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="PLAYER 1"
+                    android:text="@string/player_1"
                     android:textColor="#2C1C1C"
                     android:textSize="25sp"
                     android:layout_marginBottom="20dp"
@@ -151,7 +151,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="PLAYER 1"
+                    android:text="@string/player_1"
                     android:textColor="#4E3A3A"
                     android:textSize="25sp"
                     android:layout_marginBottom="20dp"
@@ -163,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="PLAYER 1"
+                    android:text="@string/player_1"
                     android:textColor="#FFFFFF"
                     android:layout_marginBottom="20dp"
                     android:textSize="25sp" />
@@ -174,7 +174,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="1234567"
+                    android:text="@string/_1234567"
                     android:textColor="#2C1C1C"
                     android:textSize="25sp"
                     android:layout_marginTop="10dp"
@@ -186,7 +186,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="1234567"
+                    android:text="@string/_1234567"
                     android:textColor="#4E3A3A"
                     android:textSize="25sp"
                     android:layout_marginTop="10dp"
@@ -198,7 +198,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="1234567"
+                    android:text="@string/_1234567"
                     android:textColor="#FFFFFF"
                     android:layout_marginTop="10dp"
                     android:textSize="25sp" />
@@ -216,7 +216,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="2"
+                    android:text="@string/_2"
                     android:textColor="#2C1C1C"
                     android:textSize="40sp"
                     android:translationY="6dp" />
@@ -226,7 +226,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="2"
+                    android:text="@string/_2"
                     android:textColor="#4E3A3A"
                     android:textSize="40sp"
                     android:translationY="3dp" />
@@ -236,7 +236,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="2"
+                    android:text="@string/_2"
                     android:textColor="#FFFFFF"
                     android:textSize="40sp" />
 
@@ -274,7 +274,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="PLAYER 2"
+                    android:text="@string/player_2"
                     android:textColor="#2C1C1C"
                     android:textSize="25sp"
                     android:layout_marginBottom="20dp"
@@ -286,7 +286,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="PLAYER 2"
+                    android:text="@string/player_2"
                     android:textColor="#4E3A3A"
                     android:textSize="25sp"
                     android:layout_marginBottom="20dp"
@@ -298,7 +298,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="PLAYER 2"
+                    android:text="@string/player_2"
                     android:textColor="#FFFFFF"
                     android:layout_marginBottom="20dp"
                     android:textSize="25sp" />
@@ -309,7 +309,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="1234567"
+                    android:text="@string/player_2"
                     android:textColor="#2C1C1C"
                     android:textSize="25sp"
                     android:layout_marginTop="10dp"
@@ -321,7 +321,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="1234567"
+                    android:text="@string/player_2"
                     android:textColor="#4E3A3A"
                     android:textSize="25sp"
                     android:layout_marginTop="10dp"
@@ -333,7 +333,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="1234567"
+                    android:text="@string/player_2"
                     android:textColor="#FFFFFF"
                     android:layout_marginTop="10dp"
                     android:textSize="25sp" />
@@ -350,7 +350,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="3"
+                    android:text="@string/_3"
                     android:textColor="#2C1C1C"
                     android:textSize="40sp"
                     android:translationY="6dp" />
@@ -360,7 +360,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="3"
+                    android:text="@string/_3"
                     android:textColor="#4E3A3A"
                     android:textSize="40sp"
                     android:translationY="3dp" />
@@ -370,7 +370,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="3"
+                    android:text="@string/_3"
                     android:textColor="#FFFFFF"
                     android:textSize="40sp" />
 
@@ -408,7 +408,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="PLAYER 3"
+                    android:text="@string/player_3"
                     android:textColor="#2C1C1C"
                     android:textSize="25sp"
                     android:layout_marginBottom="20dp"
@@ -420,7 +420,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="PLAYER 3"
+                    android:text="@string/player_3"
                     android:textColor="#4E3A3A"
                     android:textSize="25sp"
                     android:layout_marginBottom="20dp"
@@ -432,7 +432,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="PLAYER 3"
+                    android:text="@string/player_3"
                     android:layout_marginBottom="20dp"
                     android:textColor="#FFFFFF"
                     android:textSize="25sp" />
@@ -442,7 +442,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="1234567"
+                    android:text="@string/_1234567"
                     android:textColor="#2C1C1C"
                     android:textSize="25sp"
                     android:layout_marginTop="10dp"
@@ -454,7 +454,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="1234567"
+                    android:text="@string/_1234567"
                     android:textColor="#4E3A3A"
                     android:textSize="25sp"
                     android:layout_marginTop="10dp"
@@ -466,7 +466,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/roboto_black"
-                    android:text="1234567"
+                    android:text="@string/_1234567"
                     android:textColor="#FFFFFF"
                     android:layout_marginTop="10dp"
                     android:textSize="25sp" />
@@ -522,6 +522,7 @@
                 android:id="@+id/playIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="83dp"
+                android:alpha="0.5"
                 android:contentDescription="@string/play_icon"
                 android:src="@drawable/play_button_icon" />
 
@@ -533,7 +534,8 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/roboto_black"
                 android:paddingTop="35dp"
-                android:text="MAIN MENU"
+                android:text="@string/main_menu"
+                android:alpha="0.5"
                 android:textAlignment="center"
                 android:textColor="#2C1C1C"
                 android:textSize="25sp"
@@ -547,7 +549,8 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/roboto_black"
                 android:paddingTop="35dp"
-                android:text="MAIN MENU"
+                android:text="@string/main_menu"
+                android:alpha="0.5"
                 android:textAlignment="center"
                 android:textColor="#4E3A3A"
                 android:textSize="25sp"
@@ -561,7 +564,8 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/roboto_black"
                 android:paddingTop="35dp"
-                android:text="MAIN MENU"
+                android:text="@string/main_menu"
+                android:alpha="0.5"
                 android:textAlignment="center"
                 android:textColor="#FFFFFF"
                 android:textSize="25sp" />
@@ -573,7 +577,7 @@
             android:layout_width="125dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="325dp"
-            android:background="@drawable/button_background"
+            android:background="@drawable/selected_button_background"
             android:gravity="center"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -653,6 +657,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="83dp"
                 android:layout_gravity="center"
+                android:alpha="0.5"
                 android:contentDescription="@string/shop_icon"
                 android:src="@drawable/shop_icon" />
 
@@ -665,6 +670,7 @@
                 android:fontFamily="@font/roboto_black"
                 android:paddingTop="35dp"
                 android:text="@string/shop"
+                android:alpha="0.5"
                 android:textColor="#2C1C1C"
                 android:textSize="40sp"
                 android:translationY="6dp" />
@@ -678,6 +684,7 @@
                 android:fontFamily="@font/roboto_black"
                 android:paddingTop="35dp"
                 android:text="@string/shop"
+                android:alpha="0.5"
                 android:textColor="#4E3A3A"
                 android:textSize="40sp"
                 android:translationY="3dp" />
@@ -691,6 +698,7 @@
                 android:fontFamily="@font/roboto_black"
                 android:paddingTop="35dp"
                 android:text="@string/shop"
+                android:alpha="0.5"
                 android:textColor="#FFFFFF"
                 android:textSize="40sp" />
         </FrameLayout>

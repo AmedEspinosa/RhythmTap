@@ -8,45 +8,34 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardScoreBuffer;
-
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class LeaderboardActivity extends AppCompatActivity {
-
     private LinearLayout leaderboardList;
     private ActivityResultLauncher<Intent> leaderboardLauncher;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leaderboard);
 
-
         leaderboardLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    // Handle the result if needed
+
                     if (result.getResultCode() == RESULT_OK) {
                         Log.e("Leaderboard", "ActivityResultContracts: " + RESULT_OK);
-                        // Do something with the result if needed
                     }
                 });
-
 
         FrameLayout leaderboardButton = findViewById(R.id.leaderboardButton);
         FrameLayout menuButton = findViewById(R.id.playButton);
@@ -68,7 +57,7 @@ public class LeaderboardActivity extends AppCompatActivity {
 
         leaderboardList = findViewById(R.id.leaderboard_list);
 
-        // Load the leaderboard data
+
         fetchLeaderboardData();
         showLeaderboardUI();
     }
@@ -83,14 +72,11 @@ public class LeaderboardActivity extends AppCompatActivity {
                     LeaderboardScoreBuffer scoreBuffer = Objects.requireNonNull(data.get()).getScores();
                     List<LeaderboardEntry> leaderboardEntries = new ArrayList<>();
 
-
-
-
                     for (LeaderboardScore score : scoreBuffer) {
                         leaderboardEntries.add(new LeaderboardEntry(
                                 (int) score.getRank(),
                                 score.getScoreHolderDisplayName(),
-                                score.getRawScore()  // This should now match the `long` type in LeaderboardEntry
+                                score.getRawScore()
                         ));
                     }
                     populateLeaderboard(leaderboardEntries);
@@ -101,11 +87,10 @@ public class LeaderboardActivity extends AppCompatActivity {
                 });
     }
 
-
     private void populateLeaderboard(List<LeaderboardEntry> leaderboardEntries) {
         for (LeaderboardEntry entry : leaderboardEntries) {
             if (entry.getRank() > 3) {
-                // Populate non-top-3 entries in the scroll view
+
                 View entryView = getLayoutInflater().inflate(R.layout.leaderboard_entry, leaderboardList, false);
 
                 TextView rankView = entryView.findViewById(R.id.rank);
@@ -118,7 +103,7 @@ public class LeaderboardActivity extends AppCompatActivity {
 
                 leaderboardList.addView(entryView);
             } else {
-                // Populate top 3 separately
+
                 populateTopThree(entry);
             }
         }
@@ -162,11 +147,4 @@ public class LeaderboardActivity extends AppCompatActivity {
                 .addOnSuccessListener(intent -> leaderboardLauncher.launch(intent))
                 .addOnFailureListener(e -> Log.e("Leaderboard", "Error showing leaderboard: " + e.getMessage()));
     }
-
-
-
-
-
-
-
 }

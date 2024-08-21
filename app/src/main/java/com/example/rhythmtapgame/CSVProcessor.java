@@ -42,23 +42,19 @@ public class CSVProcessor {
     }
 
     private void processLine(String line) {
-        // Expected format: song_name,lvl level,variation vX,"[index1, index2, ...]"
-        String[] parts = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)"); // Split by comma outside quotes
+        String[] parts = line.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
         if (parts.length < 4) {
             Log.e(TAG, "Invalid line format: " + line);
             return;
         }
 
         String songName = parts[0].trim();
-        String level = parts[1].trim().split("lvl")[1].trim(); // Extract level number
-        String variation = parts[2].trim().split("v")[1].trim(); // Extract variation number
+        String level = parts[1].trim().split("lvl")[1].trim();
+        String variation = parts[2].trim().split("v")[1].trim();
         String indexes = parts[3].trim();
 
         String key = songName + "_" + level + "_" + variation;
         List<Integer> tileIndexes = parseIndexes(indexes);
-
-
-
 
         if (!tilePositionsMap.containsKey(key)) {
             tilePositionsMap.put(key, new ArrayList<>());
@@ -71,7 +67,7 @@ public class CSVProcessor {
 
     private List<Integer> parseIndexes(String indexes) {
         List<Integer> result = new ArrayList<>();
-        indexes = indexes.replaceAll("[\\[\\]\"]", ""); // Remove brackets and quotes
+        indexes = indexes.replaceAll("[\\[\\]\"]", "");
         String[] indexArray = indexes.split(",");
         for (String index : indexArray) {
             try {
@@ -88,7 +84,7 @@ public class CSVProcessor {
         if (level % 6 == 0) {
             key = songName + "_" + 1 + "_" + variation;
         } else if (level >= 14) {
-            key = songName + "_" + 14 + "_" + variation; // Handle levels 14 and above
+            key = songName + "_" + 14 + "_" + variation;
         } else {
             key = songName + "_" + level + "_" + variation;
         }

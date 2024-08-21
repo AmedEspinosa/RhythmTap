@@ -4,8 +4,6 @@ public class BeatTile {
     private int x, y;
     private boolean isActive;
     private boolean initiallyToggled;
-    private int soundId;
-    private boolean partOfCluster;
 
 
     public BeatTile(int x, int y) {
@@ -13,9 +11,7 @@ public class BeatTile {
         this.y = y;
         this.isActive = true;
         this.initiallyToggled = false;
-        this.partOfCluster = false;
     }
-
 
     public void toggle() {
         this.isActive = !this.isActive;
@@ -25,7 +21,6 @@ public class BeatTile {
         return this.isActive;
     }
 
-    // Getters for x and y
     public int getX() {
         return x;
     }
@@ -41,20 +36,5 @@ public class BeatTile {
     public void setInitiallyToggled(boolean initiallyToggled) {
         this.initiallyToggled = initiallyToggled;
     }
-
-    public int getSoundId() {
-        return soundId;
-    }
-
-    public void setSoundId(int soundId) {
-        this.soundId = soundId;
-    }
-
-    public boolean isPartOfCluster() {
-        return partOfCluster;
-    }
-
-    public void setPartOfCluster(boolean partOfCluster) {
-        this.partOfCluster = partOfCluster;
-    }
 }
+

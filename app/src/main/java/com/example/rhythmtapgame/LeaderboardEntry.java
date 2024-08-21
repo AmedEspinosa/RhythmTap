@@ -11,11 +11,6 @@ public class LeaderboardEntry {
         this.score = score;
     }
 
-    public LeaderboardEntry(String playerName, long score) {
-        this.playerName = playerName;
-        this.score = score;
-    }
-
     public int getRank() {
         return rank;
     }

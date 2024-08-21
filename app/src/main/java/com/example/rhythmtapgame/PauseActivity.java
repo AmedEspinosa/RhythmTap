@@ -6,7 +6,6 @@ import android.graphics.Shader;
 import android.os.Bundle;
 
 import android.text.TextPaint;
-import android.view.View;
 
 import android.widget.TextView;
 
@@ -30,16 +29,16 @@ public class PauseActivity extends AppCompatActivity {
                 LinearGradient shader = new LinearGradient(
                         0, 0, width, 0,
                         new int[]{
-                                Color.parseColor("#D93232"),  // Red color at 0%
-                                Color.parseColor("#9504AC"),  // Purple color at 34%
-                                Color.parseColor("#FFFFFF")   // White color at 100%
+                                Color.parseColor("#D93232"),
+                                Color.parseColor("#9504AC"),
+                                Color.parseColor("#FFFFFF")
                         },
                         new float[]{0f, 0.34f, 1f},
                         Shader.TileMode.CLAMP);
 
                 paint.setShader(shader);
-                title.setTextColor(Color.WHITE); // Set a base color
-                title.invalidate(); // Force redraw
+                title.setTextColor(Color.WHITE);
+                title.invalidate();
             }
         });
     }

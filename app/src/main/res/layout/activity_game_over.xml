@@ -4,22 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#CC000000"
+    android:background="#E6000000"
     android:clickable="true"
     android:focusable="true">
+
+
+    <!-- Auto layout, variables, and unit scale are not yet supported -->
 
 
     <FrameLayout
         android:layout_width="250dp"
         android:layout_height="250dp"
         android:layout_marginStart="58dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="59dp"
         android:layout_marginBottom="459dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:id="@+id/shadow2Title"
@@ -54,20 +57,19 @@
     </FrameLayout>
 
 
-    <!-- Auto layout, variables, and unit scale are not yet supported -->
-
-
     <FrameLayout
         android:layout_width="300dp"
         android:layout_height="70dp"
         android:layout_marginStart="34dp"
-        android:layout_marginTop="271dp"
+        android:layout_marginTop="215dp"
         android:layout_marginEnd="25dp"
         android:layout_marginBottom="382dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <TextView
             android:id="@+id/shadow2PressPlay"
@@ -102,12 +104,11 @@
             android:textSize="35sp" />
     </FrameLayout>
 
-
     <FrameLayout
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="79dp"
-        android:layout_marginTop="344dp"
+        android:layout_marginTop="210dp"
         android:layout_marginEnd="80dp"
         android:layout_marginBottom="345dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -152,7 +153,7 @@
         android:layout_width="200dp"
         android:layout_height="60dp"
         android:layout_marginStart="79dp"
-        android:layout_marginTop="387dp"
+        android:layout_marginTop="210dp"
         android:layout_marginEnd="80dp"
         android:layout_marginBottom="276dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -193,13 +194,224 @@
             android:textSize="25sp" />
     </FrameLayout>
 
+
+    <FrameLayout
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="79dp"
+        android:layout_marginTop="300dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="276dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/gameOverRank2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/rank_11"
+            android:textColor="#2C1C1C"
+            android:textSize="25sp"
+            android:translationY="6dp" />
+
+        <TextView
+            android:id="@+id/gameOverRank1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/rank_11"
+            android:textColor="#4E3A3A"
+            android:textSize="25sp"
+            android:translationY="3dp" />
+
+        <TextView
+            android:id="@+id/rankTextOver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/rank_11"
+            android:textColor="#4C49DD"
+            android:textSize="25sp" />
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="79dp"
+        android:layout_marginTop="350dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="276dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/gameOverRankUp2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/rank_up"
+            android:textColor="#2C1C1C"
+            android:textSize="15sp"
+            android:translationY="2.5dp"
+            android:visibility="gone"
+
+            />
+
+        <TextView
+            android:id="@+id/gameOverRankUp1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/rank_up"
+            android:textColor="#4E3A3A"
+            android:textSize="15sp"
+            android:translationY="1dp"
+            android:visibility="gone"
+
+            />
+
+        <TextView
+            android:id="@+id/rankUpText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/rank_up"
+            android:textColor="#7D60CE"
+            android:textSize="15sp"
+            android:visibility="gone"
+            />
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="79dp"
+        android:layout_marginTop="395dp"
+        android:layout_marginEnd="80dp"
+        android:layout_marginBottom="276dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/xpText2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/xp_123456789"
+            android:textColor="#2C1C1C"
+            android:textSize="25sp"
+            android:translationY="6dp" />
+
+        <TextView
+            android:id="@+id/xpText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/xp_123456789"
+            android:textColor="#4E3A3A"
+            android:textSize="25sp"
+            android:translationY="3dp" />
+
+        <TextView
+            android:id="@+id/xpText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/xp_123456789"
+            android:textColor="#F9DA65"
+            android:textSize="25sp" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="325dp"
+        android:layout_height="102dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="290dp"
+        android:layout_marginEnd="22dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <View
+            android:layout_width="288dp"
+            android:layout_height="73dp"
+            android:layout_gravity="center"
+            android:background="#4E3A3A"
+            android:translationY="2.5dp"
+            tools:layout_editor_absoluteX="39dp"
+            tools:layout_editor_absoluteY="360dp" />
+
+
+        <View
+            android:id="@+id/useLifeButton"
+            android:layout_width="290dp"
+            android:layout_height="73dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rectangle_3"
+            tools:layout_editor_absoluteX="39dp"
+            tools:layout_editor_absoluteY="360dp" />
+
+        <TextView
+            android:id="@+id/useLifeText2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/use_life"
+            android:textColor="#2C1C1C"
+            android:textSize="40sp"
+            android:translationY="6dp" />
+
+        <TextView
+            android:id="@+id/useLifeText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/use_life"
+            android:textColor="#4E3A3A"
+            android:textSize="40sp"
+            android:translationY="3dp" />
+
+        <TextView
+            android:id="@+id/useLifeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="@string/use_life"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp" />
+
+    </FrameLayout>
+
+
     <FrameLayout
         android:layout_width="325dp"
         android:layout_height="102dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="459dp"
         android:layout_marginEnd="22dp"
-        android:layout_marginBottom="160dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -264,9 +476,8 @@
         android:layout_width="325dp"
         android:layout_height="102dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="561dp"
+        android:layout_marginTop="630dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="59dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -289,7 +500,7 @@
             android:layout_width="290dp"
             android:layout_height="73dp"
             android:layout_gravity="center"
-            android:background="@drawable/rectangle_3"
+            android:background="@drawable/rectangle_5"
             tools:layout_editor_absoluteX="39dp"
             tools:layout_editor_absoluteY="360dp" />
 
@@ -299,7 +510,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="@string/main_menu_pause"
+            android:text="@string/exit"
             android:textColor="#2C1C1C"
             android:textSize="40sp"
             android:translationY="6dp" />
@@ -310,7 +521,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="@string/main_menu_pause"
+            android:text="@string/exit"
             android:textColor="#4E3A3A"
             android:textSize="40sp"
             android:translationY="3dp" />
@@ -321,7 +532,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="@string/main_menu_pause"
+            android:text="@string/exit"
             android:textColor="#FFFFFF"
             android:textSize="40sp" />
 
