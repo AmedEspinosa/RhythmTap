@@ -319,17 +319,88 @@
         android:id="@+id/pauseMenuOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
-    </FrameLayout>
+        android:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/gameOverMenuOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
-    </FrameLayout>
+        android:visibility="gone" />
 
 
+    <FrameLayout
+        android:id="@+id/objectiveOverlayGame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/objectives_button_game"
+        android:layout_width="85dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="68dp"
+        android:layout_marginEnd="281dp"
+        android:layout_marginBottom="587dp"
+        android:background="@drawable/task_tab_game"
+        android:contentDescription="@string/clipboard"
+        android:src="@drawable/clip_board"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/lives_button"
+        android:layout_width="85dp"
+        android:layout_height="65dp"
+        android:layout_marginTop="133dp"
+        android:layout_marginEnd="281dp"
+        android:layout_marginBottom="522dp"
+        android:background="@drawable/lives_tab_game"
+        android:contentDescription="Lives"
+        android:src="@drawable/heart_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/objectiveCountGame"
+        android:layout_width="22dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="119dp"
+        android:layout_marginEnd="274dp"
+        android:layout_marginBottom="578dp"
+        android:background="@drawable/circle_red"
+        android:fontFamily="@font/roboto_black"
+        android:text="@string/freezeCountNum"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/livesCountGame"
+        android:layout_width="22dp"
+        android:layout_height="23dp"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="186dp"
+        android:layout_marginEnd="274dp"
+        android:layout_marginBottom="511dp"
+        android:background="@drawable/circle_red"
+        android:fontFamily="@font/roboto_black"
+        android:text="@string/freezeCountNum"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

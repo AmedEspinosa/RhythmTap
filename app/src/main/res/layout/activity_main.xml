@@ -462,6 +462,7 @@
             android:translationY="5dp" />
 
         <ImageView
+            android:id="@+id/objectives_button"
             android:layout_width="85dp"
             android:layout_height="65dp"
             android:layout_marginStart="15dp"
@@ -471,7 +472,7 @@
             android:src="@drawable/clip_board" />
 
         <TextView
-            android:id="@+id/freezeCount"
+            android:id="@+id/objectiveCount"
             android:layout_width="22dp"
             android:layout_height="23dp"
             android:layout_marginStart="10dp"
@@ -577,6 +578,12 @@
 
     <FrameLayout
         android:id="@+id/rankViewOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/objectivesOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />

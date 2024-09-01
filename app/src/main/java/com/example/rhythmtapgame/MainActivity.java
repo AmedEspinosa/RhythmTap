@@ -13,15 +13,21 @@ import com.google.android.gms.games.PlayGames;
 import android.os.Handler;
 import android.util.Log;
 import android.text.TextPaint;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.w3c.dom.Text;
+
+import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,8 +45,17 @@ public class MainActivity extends AppCompatActivity {
     private int currentRank;
     private FrameLayout rankUpOverLay;
     private FrameLayout rankViewOverlay;
+    private FrameLayout objectivesOverlay;
+    private ObjectiveManager objectiveManager;
+    private LinearLayout dailyObjectivesContainer;
     private boolean hasRankedUp = false;
     private SharedPreferences sharedPreferences;
+    private ImageView objectivesButton;
+    private String countText;
+    private TextView countdownTextView;
+    private Handler countdownHandler;
+    private Runnable countdownRunnable;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +83,14 @@ public class MainActivity extends AppCompatActivity {
         rankUpOverLay = findViewById(R.id.rankUpOverlay);
 
         rankViewOverlay = findViewById(R.id.rankViewOverlay);
+
+        objectivesButton = findViewById(R.id.objectives_button);
+
+        objectivesOverlay = findViewById(R.id.objectivesOverlay);
+
+        objectiveManager = new ObjectiveManager(this);
+
+        //objectiveManager.resetObjectives();
 
         View settingButton = findViewById(R.id.settingButton);
 
@@ -111,6 +134,16 @@ public class MainActivity extends AppCompatActivity {
 
         applySettings();
 
+
+        TextView completedCount = findViewById(R.id.objectiveCount);
+
+        countText = String.valueOf(objectiveManager.getCompletedObjectives());
+
+
+        completedCount.setText(countText);
+
+        objectivesButton.setOnClickListener(v -> showObjectives());
+
         xpProgressBar.setOnClickListener(v -> showRankView());
 
         rankButton.setOnClickListener(v -> showRankView());
@@ -137,6 +170,64 @@ public class MainActivity extends AppCompatActivity {
         updateUI();
     }
 
+    private void showObjectives() {
+        BouncingSquaresView bouncingSquaresView = findViewById(R.id.bouncingSquareView);
+        if (bouncingSquaresView != null) {
+            bouncingSquaresView.pauseBouncing(); // Pause the BouncingSquaresView
+        }
+
+        if (objectivesOverlay.getChildCount() == 0) {
+            View objectivesContent = getLayoutInflater().inflate(R.layout.objectives_activity, objectivesOverlay, false);
+            objectivesOverlay.addView(objectivesContent);
+
+
+            setUpObjectives(objectivesContent);
+
+            startDynamicCountdown();
+
+
+        }
+
+        objectivesOverlay.setVisibility(View.VISIBLE);
+        Log.d("ObjectivesDebug", "Objectives Overlay should now be visible.");
+    }
+
+    private void startDynamicCountdown() {
+        countdownHandler = new Handler();
+        countdownRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateCountdown();
+                countdownHandler.postDelayed(this, 1000); // Update every second
+            }
+        };
+        countdownHandler.post(countdownRunnable); // Start the handler
+    }
+
+    private void updateCountdown() {
+        long millisUntilReset = objectiveManager.getMillisUntilNextReset();
+
+        if (millisUntilReset < 0) {
+            millisUntilReset = 0;
+            objectiveManager.startSession(); // Reschedule the next reset if necessary
+        }
+
+        int hours = (int) (millisUntilReset / (1000 * 60 * 60));
+        int minutes = (int) ((millisUntilReset / (1000 * 60)) % 60);
+        int seconds = (int) ((millisUntilReset / 1000) % 60);
+
+        String timeRemaining = String.format("Next Reset: %02d:%02d:%02d", hours, minutes, seconds);
+        countdownTextView.setText(timeRemaining);
+    }
+
+    private void stopDynamicCountdown() {
+        if (countdownHandler != null) {
+            countdownHandler.removeCallbacks(countdownRunnable);
+        }
+    }
+
+
+
     private void showRankView() {
         BouncingSquaresView bouncingSquaresView = findViewById(R.id.bouncingSquareView);
         if (bouncingSquaresView != null) {
@@ -156,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
     private void showRankUpMenu() {
         BouncingSquaresView bouncingSquaresView = findViewById(R.id.bouncingSquareView);
         if (bouncingSquaresView != null) {
-            bouncingSquaresView.pauseBouncing(); // Pause the BouncingSquaresView
+            bouncingSquaresView.pauseBouncing();
         }
         if (rankUpOverLay.getChildCount() == 0) {
             View rankUpMenuContent = getLayoutInflater().inflate(R.layout.activity_rank_up, rankUpOverLay, false);
@@ -168,6 +259,208 @@ public class MainActivity extends AppCompatActivity {
         rankUpOverLay.setVisibility(View.VISIBLE);
         Log.d("RankDebug", "Rank Up Overlay should now be visible.");
     }
+
+    private void showSettingsMenu() {
+
+        BouncingSquaresView bouncingSquaresView = findViewById(R.id.bouncingSquareView);
+        if (bouncingSquaresView != null) {
+            bouncingSquaresView.pauseBouncing();
+        }
+
+        if (settingOverlay.getChildCount() == 0) {
+            View settingsMenuContent = getLayoutInflater().inflate(R.layout.settings_activity, settingOverlay, false);
+            settingOverlay.addView(settingsMenuContent);
+
+            setupSettingsMenu(settingsMenuContent);
+        }
+        settingOverlay.setVisibility(View.VISIBLE);
+    }
+
+
+    private void setUpObjectives(View objectivesContent) {
+        LinearLayout objectivesContainer = objectivesContent.findViewById(R.id.objectives_list);
+        dailyObjectivesContainer = objectivesContent.findViewById(R.id.daily_objectives_list);
+
+
+
+        TextView compObj = objectivesContent.findViewById(R.id.completeObjectiveText);
+        TextView compObj1 = objectivesContent.findViewById(R.id.completeObjectiveText1);
+        TextView compObj2 = objectivesContent.findViewById(R.id.completeObjectiveText2);
+
+        countdownTextView = objectivesContent.findViewById(R.id.timeLeftObj);
+
+        updateCountdown(countdownTextView);
+
+
+
+        Objective rankObj = objectiveManager.getObjectiveByType(ObjectiveType.REACH_RANK,"regular");
+        Objective rankObjDaily = objectiveManager.getObjectiveByType(ObjectiveType.REACH_RANK,"daily");
+
+
+        if (rankObj.getType() != null) {
+            if (currentRank >= rankObj.getTargetAmount()) {
+                objectiveManager.updateObjectiveProgress(ObjectiveType.REACH_RANK,currentRank,"regular");
+            }
+        }
+
+        if (rankObjDaily.getType() != null) {
+            if (currentRank >= rankObjDaily.getTargetAmount()) {
+                objectiveManager.updateObjectiveProgress(ObjectiveType.REACH_RANK,currentRank,"daily");
+            }
+        }
+
+        if (currencyManager.getBeatCoins() == objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS,"regular").getTargetAmount()) {
+            objectiveManager.updateObjectiveProgress(ObjectiveType.COLLECT_COINS, objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS,"regular").getTargetAmount(),"regular");
+        }
+
+        if (currencyManager.getBeatCoins() == objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS,"daily").getTargetAmount()) {
+            objectiveManager.updateObjectiveProgress(ObjectiveType.COLLECT_COINS, objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS,"daily").getTargetAmount(),"daily");
+        }
+
+        int countNeeded = objectiveManager.getCountNeededForTier();
+
+        String compObjString = "COMPLETE " + countNeeded  + " OBJECTIVES TO UNLOCK NEW CHALLENGES";
+
+        compObj.setText(compObjString);
+        compObj1.setText(compObjString);
+        compObj2.setText(compObjString);
+
+
+        List<Objective> regularObjectives = objectiveManager.getRegularObjectives();
+        for (Objective obj : regularObjectives) {
+            Log.d("ObjectiveManager", "Adding objective to view: " + obj.getDescription());
+
+            addObjectiveToView(objectivesContainer, obj);
+        }
+
+        List<Objective> dailyObjectives = objectiveManager.getDailyObjectives();
+        for (Objective obj: dailyObjectives) {
+            addObjectiveToView(dailyObjectivesContainer,obj);
+        }
+
+        ImageView exitButton = objectivesContent.findViewById(R.id.exit_ButtonObj);
+
+        exitButton.setOnClickListener(view -> {
+            BouncingSquaresView bouncingSquaresView = findViewById(R.id.bouncingSquareView);
+            if (bouncingSquaresView != null) {
+                bouncingSquaresView.resumeBouncing();
+            }
+
+            TextView completedCount = findViewById(R.id.objectiveCount);
+
+            objectivesOverlay.setVisibility(View.GONE);
+            objectivesOverlay.removeAllViews();
+            countText = String.valueOf(objectiveManager.getCompletedObjectives());
+            completedCount.setText(countText);
+
+        });
+
+    }
+
+    private void updateCountdown(TextView countdownTextView) {
+        long millisUntilReset = objectiveManager.getMillisUntilNextReset();
+
+        if (millisUntilReset < 0) {
+            // If time is negative, force it to 0 and set the next reset time
+            millisUntilReset = 0;
+            objectiveManager.startSession(); // Reschedule the next reset
+        }
+
+        int hours = (int) (millisUntilReset / (1000 * 60 * 60));
+        int minutes = (int) ((millisUntilReset / (1000 * 60)) % 60);
+        int seconds = (int) ((millisUntilReset / 1000) % 60);
+
+        String timeRemaining = String.format("TIME LEFT : %02d:%02d:%02d", hours, minutes, seconds);
+        countdownTextView.setText(timeRemaining);
+    }
+
+
+    private void addObjectiveToView(LinearLayout objectivesContainer, Objective objective) {
+
+    View objectivesContent = getLayoutInflater().inflate(R.layout.objectives_entry, objectivesContainer, false);
+
+
+    CheckBox objectiveCheckbox = objectivesContent.findViewById(R.id.objCheckbox);
+
+    TextView objectiveDescription = objectivesContent.findViewById(R.id.descriptionObj);
+    TextView objectiveDescription1 = objectivesContent.findViewById(R.id.descriptionObj1);
+    TextView objectiveDescription2 = objectivesContent.findViewById(R.id.descriptionObj2);
+
+    TextView objectiveProgress = objectivesContent.findViewById(R.id.progressTextObj);
+    TextView objectiveProgress1 = objectivesContent.findViewById(R.id.progressTextObj1);
+    TextView objectiveProgress2 = objectivesContent.findViewById(R.id.progressTextObj2);
+
+    TextView objectiveReward = objectivesContent.findViewById(R.id.rewardTextObj);
+    TextView objectiveReward1 = objectivesContent.findViewById(R.id.rewardTextObj1);
+    TextView objectiveReward2 = objectivesContent.findViewById(R.id.rewardTextObj2);
+
+
+
+        if (objective.getType().equals(ObjectiveType.NO_MISS)) {
+            objectiveDescription.setText(objective.getDescription());
+            objectiveDescription1.setText(objective.getDescription());
+            objectiveDescription2.setText(objective.getDescription());
+
+            objectiveDescription.setTextSize(15);
+            objectiveDescription1.setTextSize(15);
+            objectiveDescription2.setTextSize(15);
+
+        }
+
+        objectiveDescription.setText(objective.getDescription());
+        objectiveDescription1.setText(objective.getDescription());
+        objectiveDescription2.setText(objective.getDescription());
+
+    String progressString = objective.getCurrentProgress() + "/" + objective.getTargetAmount() + " " + objective.getTargetDescriptor();
+
+        objectiveProgress.setText(progressString);
+        objectiveProgress1.setText(progressString);
+        objectiveProgress2.setText(progressString);
+
+    String rewardString = "Reward: " + objective.getRewardXP() + " XP";
+
+        objectiveReward.setText(rewardString);
+        objectiveReward1.setText(rewardString);
+        objectiveReward2.setText(rewardString);
+
+
+        objectiveCheckbox.setChecked(objective.isCompleted());
+
+
+
+        objectivesContent.setOnClickListener(v ->
+    {
+        if (objective.isCompleted() && !objective.isClaimed()) {
+            int xp = objectiveManager.claimObjectiveReward(objective,objective.getClassification());
+            progressManager.addXP(xp);
+            progressManager.saveProgress();
+            objectiveManager.saveObjectives();
+
+            objectiveCheckbox.setChecked(true);
+            objective.setClaimed(true);
+            objectiveReward.setText("Reward Claimed");
+            objectiveReward1.setText("Reward Claimed");
+            objectiveReward2.setText("Reward Claimed");
+
+            TextView compObj = findViewById(R.id.completeObjectiveText);
+            TextView compObj1 = findViewById(R.id.completeObjectiveText1);
+            TextView compObj2 = findViewById(R.id.completeObjectiveText2);
+
+            int countNeeded = objectiveManager.getCountNeededForTier();
+
+            String compObjString = "COMPLETE " + countNeeded  + " OBJECTIVES TO UNLOCK NEW CHALLENGES";
+
+            compObj.setText(compObjString);
+            compObj1.setText(compObjString);
+            compObj2.setText(compObjString);
+
+        }
+    });
+
+        objectivesContainer.addView(objectivesContent);
+
+
+}
 
     private void setUpRankMenu(View rankUpMenuContent) {
         ProgressBar bar = rankUpMenuContent.findViewById(R.id.customProgressBarRankUp);
@@ -183,6 +476,10 @@ public class MainActivity extends AppCompatActivity {
         FrameLayout rankUpTextLayout = rankUpMenuContent.findViewById(R.id.rankUpTextLayout);
 
         FrameLayout rewardsTextLayout = rankUpMenuContent.findViewById(R.id.rewardsTextLayout);
+
+        View resumeButton = rankUpMenuContent.findViewById(R.id.resumeButtonLayout);
+
+        resumeButton.setVisibility(View.GONE);
 
         rankUpTextLayout.setVisibility(View.GONE);
 
@@ -210,7 +507,9 @@ public class MainActivity extends AppCompatActivity {
 
         rankViewUpcoming.setVisibility(View.VISIBLE);
 
-        View continueButton = rankUpMenuContent.findViewById(R.id.resumeButtonRank);
+        View continueButton = rankUpMenuContent.findViewById(R.id.exit_ButtonRank);
+
+        continueButton.setVisibility(View.VISIBLE);
 
         bar.setProgress(progress);
 
@@ -266,29 +565,13 @@ public class MainActivity extends AppCompatActivity {
         continueButton.setOnClickListener(view -> {
             BouncingSquaresView bouncingSquaresView = findViewById(R.id.bouncingSquareView);
             if (bouncingSquaresView != null) {
-                bouncingSquaresView.resumeBouncing(); // Resume the BouncingSquaresView
+                bouncingSquaresView.resumeBouncing();
             }
 
             rankUpOverLay.setVisibility(View.GONE);
         });
     }
 
-
-    private void showSettingsMenu() {
-
-        BouncingSquaresView bouncingSquaresView = findViewById(R.id.bouncingSquareView);
-        if (bouncingSquaresView != null) {
-            bouncingSquaresView.pauseBouncing(); // Pause the BouncingSquaresView
-        }
-
-        if (settingOverlay.getChildCount() == 0) {
-            View settingsMenuContent = getLayoutInflater().inflate(R.layout.settings_activity, settingOverlay, false);
-            settingOverlay.addView(settingsMenuContent);
-
-            setupSettingsMenu(settingsMenuContent);
-        }
-        settingOverlay.setVisibility(View.VISIBLE);
-    }
 
 
     private void setupSettingsMenu(View settingsMenuContent) {
@@ -297,12 +580,16 @@ public class MainActivity extends AppCompatActivity {
         CheckBox musicCheckBox = settingsMenuContent.findViewById(R.id.musicCheckBox);
         CheckBox soundEffectsCheckBox = settingsMenuContent.findViewById(R.id.soundEffectCheckBox);
         View saveButton = settingsMenuContent.findViewById(R.id.saveButton);
-        View exitButton = settingsMenuContent.findViewById(R.id.exitButton);
+        ImageView exitButton = settingsMenuContent.findViewById(R.id.exit_ButtonSettings);
+        View closeAppButton = settingsMenuContent.findViewById(R.id.exitButton);
         TextView settingsSavedMessage = settingsMenuContent.findViewById(R.id.save_success_text);
         TextView soundEffectPercent = settingsMenuContent.findViewById(R.id.sound_effects_percentage);
         TextView musicPercent = settingsMenuContent.findViewById(R.id.music_percentage);
+        TextView ioSoundEffect = settingsMenuContent.findViewById(R.id.IOSoundEffect);
+        TextView ioMusic = settingsMenuContent.findViewById(R.id.IOMusic);
 
-        loadSettings(musicSeekBar, soundEffectsSeekBar, musicCheckBox, soundEffectsCheckBox, soundEffectPercent, musicPercent);
+
+        loadSettings(musicSeekBar, soundEffectsSeekBar, musicCheckBox, soundEffectsCheckBox, soundEffectPercent, musicPercent, ioSoundEffect, ioMusic);
 
         musicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -343,9 +630,12 @@ public class MainActivity extends AppCompatActivity {
                 musicSeekBar.setProgress(musicVolume);
                 String musicPercentText = musicVolume + "%";
                 musicPercent.setText(musicPercentText);
+                ioMusic.setText("ON");
             } else {
                 musicSeekBar.setProgress(0);
                 musicPercent.setText("0%");
+                ioMusic.setText("OFF");
+
             }
         });
 
@@ -356,14 +646,17 @@ public class MainActivity extends AppCompatActivity {
                 soundEffectsSeekBar.setProgress(soundEffectsVolume);
                 String soundEffectPercentText = soundEffectsVolume + "%";
                 soundEffectPercent.setText(soundEffectPercentText);
+                ioSoundEffect.setText("ON");
             } else {
                 soundEffectsSeekBar.setProgress(0);
                 soundEffectPercent.setText("0%");
+                ioSoundEffect.setText("OFF");
+
             }
         });
 
         saveButton.setOnClickListener(view -> saveSettings(musicSeekBar, soundEffectsSeekBar, musicCheckBox, soundEffectsCheckBox,
-                settingsSavedMessage, soundEffectPercent, musicPercent));
+                settingsSavedMessage, soundEffectPercent, musicPercent, ioSoundEffect, ioMusic));
 
         exitButton.setOnClickListener(view -> {
             BouncingSquaresView bouncingSquaresView = findViewById(R.id.bouncingSquareView);
@@ -373,10 +666,12 @@ public class MainActivity extends AppCompatActivity {
 
             settingOverlay.setVisibility(View.GONE);
         });
+
+        closeAppButton.setOnClickListener(view -> finishAffinity());
     }
 
 
-    private void loadSettings(SeekBar musicSeekBar, SeekBar soundEffectsSeekBar, CheckBox musicCheckBox, CheckBox soundEffectsCheckBox, TextView soundEffectPercent, TextView musicPercent) {
+    private void loadSettings(SeekBar musicSeekBar, SeekBar soundEffectsSeekBar, CheckBox musicCheckBox, CheckBox soundEffectsCheckBox, TextView soundEffectPercent, TextView musicPercent, TextView ioSoundEffect, TextView ioMusic) {
         int musicVolume = sharedPreferences.getInt("musicVolume", 100);
         int soundEffectsVolume = sharedPreferences.getInt("soundEffectsVolume", 100);
         boolean isMusicOn = sharedPreferences.getBoolean("isMusicOn", true);
@@ -390,15 +685,20 @@ public class MainActivity extends AppCompatActivity {
         musicSeekBar.setEnabled(isMusicOn);
         soundEffectsSeekBar.setEnabled(isSoundEffectsOn);
 
+
         String soundEffectText = soundEffectsVolume + "%";
         String musicText = musicVolume + "%";
         soundEffectPercent.setText(isSoundEffectsOn ? soundEffectText : "0%");
         musicPercent.setText(isMusicOn ? musicText : "0%");
+        ioSoundEffect.setText(isSoundEffectsOn ? "ON" : "OFF");
+        ioMusic.setText(isMusicOn ? "ON" : "OFF");
+
+
     }
 
     private void saveSettings(SeekBar musicSeekBar, SeekBar soundEffectsSeekBar,
                               CheckBox musicCheckBox, CheckBox soundEffectsCheckBox,
-                              TextView settingsSavedMessage, TextView soundEffectPercent, TextView musicPercent) {
+                              TextView settingsSavedMessage, TextView soundEffectPercent, TextView musicPercent, TextView ioSoundEffect, TextView ioMusic) {
         SharedPreferences sharedPreferences = getSharedPreferences("GameSettings", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -406,6 +706,7 @@ public class MainActivity extends AppCompatActivity {
         int soundEffectsVolume = soundEffectsCheckBox.isChecked() ? soundEffectsSeekBar.getProgress() : 0;
         boolean isMusicOn = musicCheckBox.isChecked();
         boolean isSoundEffectsOn = soundEffectsCheckBox.isChecked();
+        String onOff = musicCheckBox.isChecked() ? "ON" : "OFF";
 
         editor.putInt("musicVolume", musicVolume);
         editor.putInt("soundEffectsVolume", soundEffectsVolume);
@@ -417,6 +718,8 @@ public class MainActivity extends AppCompatActivity {
         String musicText = musicVolume + "%";
         soundEffectPercent.setText(soundEffectText);
         musicPercent.setText(musicText);
+        ioSoundEffect.setText(onOff);
+        ioMusic.setText(onOff);
 
         settingsSavedMessage.setVisibility(View.VISIBLE);
         new Handler().postDelayed(() -> settingsSavedMessage.setVisibility(View.GONE), 2000);
@@ -442,6 +745,7 @@ public class MainActivity extends AppCompatActivity {
 
         progress = (int) ((progressManager.getCurrentXP() / (float) progressManager.getNextLevelXP()) * 100);
         xpProgressBar.setProgress(progress);
+        objectiveManager.loadObjectives();
     }
 
 
@@ -522,4 +826,6 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.signInButtonLayout).setVisibility(View.VISIBLE);
     }
-}
+    }
+
+

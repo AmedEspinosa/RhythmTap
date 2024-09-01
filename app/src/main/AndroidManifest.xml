@@ -39,12 +39,9 @@
             android:theme="@style/Theme.RhythmTapGame">
         </activity>
 
-        <activity
-            android:name=".SettingsActivity"
-            android:screenOrientation="nosensor"
-            android:exported="true"
-            android:theme="@style/Theme.RhythmTapGame">
-        </activity>
+        <receiver android:name=".ObjectiveResetReceiver"
+            android:exported="false">
+        </receiver>
 
         <meta-data android:name="com.google.android.gms.games.APP_ID"
             android:value="@string/app_id" />

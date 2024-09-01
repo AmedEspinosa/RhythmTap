@@ -18,6 +18,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -26,6 +28,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.PlayGamesSdk;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +57,8 @@ public class GameActivity extends AppCompatActivity {
     private int totalTaps = 0;
     private int correctTaps = 0;
     private int currentLevel = 1;
+    private int powerUpUse = 0;
+    private int levelsCleared = 0;
     private int currentVariation;
     private int totalScore;
     private static final int[] ROW_COLORS = {
@@ -85,6 +91,22 @@ public class GameActivity extends AppCompatActivity {
     private View pauseMenuContent;
     private PlayerProgressManager progressManager;
     private int previousRank;
+    private ObjectiveManager objectiveManager;
+    private int comboCounter = 0;
+    private ImageView objectivesButton;
+    private FrameLayout objectivesOverlay;
+    private LinearLayout objectivesContainer;
+    private LinearLayout dailyObjectivesContainer;
+    private int currentRank;
+    private String countText;
+    private TextView objCount;
+    private TextView liveCount;
+    private ImageView objIcon;
+    private ImageView livesIcon;
+    private TextView countdownTextView;
+    private Handler countdownHandler;
+    private Runnable countdownRunnable;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +124,31 @@ public class GameActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("GameSettings", MODE_PRIVATE);
 
         currencyManager = new CurrencyManager(this);
+
+        objectiveManager = new ObjectiveManager(this);
+
+
+        objectiveManager.startSession();
+
+        objCount = findViewById(R.id.objectiveCountGame);
+
+        countText = String.valueOf(objectiveManager.getCompletedObjectives());
+
+
+        objCount.setText(countText);
+
+        liveCount = findViewById(R.id.livesCountGame);
+
+        objIcon = findViewById(R.id.objectives_button_game);
+        livesIcon = findViewById(R.id.lives_button);
+
+        objectivesButton = findViewById(R.id.objectives_button_game);
+
+
+        objectivesButton.setOnClickListener(v -> showObjectives());
+
+        objectivesOverlay = findViewById(R.id.objectiveOverlayGame);
+
 
         pauseMenuOverlay = findViewById(R.id.pauseMenuOverlay);
         gameOverMenuOverlay = findViewById(R.id.gameOverMenuOverlay);
@@ -160,8 +207,265 @@ public class GameActivity extends AppCompatActivity {
         startNewLevel();
     }
 
+
+    private void showObjectives() {
+        setPaused();
+
+        if (objectivesOverlay.getChildCount() == 0) {
+            View objectivesContent = getLayoutInflater().inflate(R.layout.objectives_activity, objectivesOverlay, false);
+            objectivesOverlay.addView(objectivesContent);
+
+
+            setUpObjectives(objectivesContent);
+
+            startDynamicCountdown();
+
+
+        }
+
+        objectivesOverlay.setVisibility(View.VISIBLE);
+    }
+
+    private void setUpObjectives(View objectivesContent) {
+        objectivesContainer = objectivesContent.findViewById(R.id.objectives_list);
+        dailyObjectivesContainer = objectivesContent.findViewById(R.id.daily_objectives_list);
+
+        TextView compObj = objectivesContent.findViewById(R.id.completeObjectiveText);
+        TextView compObj1 = objectivesContent.findViewById(R.id.completeObjectiveText1);
+        TextView compObj2 = objectivesContent.findViewById(R.id.completeObjectiveText2);
+
+
+        countdownTextView = objectivesContent.findViewById(R.id.timeLeftObj);
+
+        updateCountdown(countdownTextView);
+
+        objIcon.setVisibility(View.GONE);
+        livesIcon.setVisibility(View.GONE);
+        objCount.setVisibility(View.GONE);
+        liveCount.setVisibility(View.GONE);
+
+
+        int countNeeded = objectiveManager.getCountNeededForTier();
+
+        String compObjString = "COMPLETE " + countNeeded + " OBJECTIVES TO UNLOCK NEW CHALLENGES";
+
+        compObj.setText(compObjString);
+        compObj1.setText(compObjString);
+        compObj2.setText(compObjString);
+
+
+        List<Objective> regularObjectives = objectiveManager.getRegularObjectives();
+        for (Objective obj : regularObjectives) {
+
+            addObjectiveToView(objectivesContainer, obj);
+        }
+
+        List<Objective> dailyObjectives = objectiveManager.getDailyObjectives();
+        for (Objective obj : dailyObjectives) {
+
+            addObjectiveToView(dailyObjectivesContainer, obj);
+        }
+
+        ImageView exitButton = objectivesContent.findViewById(R.id.exit_ButtonObj);
+
+        exitButton.setOnClickListener(view -> {
+            setResume();
+
+            TextView completedCount = findViewById(R.id.objectiveCountGame);
+
+
+            objIcon.setVisibility(View.VISIBLE);
+            livesIcon.setVisibility(View.VISIBLE);
+            objCount.setVisibility(View.VISIBLE);
+            liveCount.setVisibility(View.VISIBLE);
+
+            objectivesOverlay.setVisibility(View.GONE);
+            objectivesOverlay.removeAllViews();
+            countText = String.valueOf(objectiveManager.getCompletedObjectives());
+            completedCount.setText(countText);
+
+        });
+
+    }
+
+    private void startDynamicCountdown() {
+        countdownHandler = new Handler();
+        countdownRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateCountdown();
+                countdownHandler.postDelayed(this, 1000); // Update every second
+            }
+        };
+        countdownHandler.post(countdownRunnable); // Start the handler
+    }
+
+    private void updateCountdown() {
+        long millisUntilReset = objectiveManager.getMillisUntilNextReset();
+
+        if (millisUntilReset < 0) {
+            millisUntilReset = 0;
+            objectiveManager.startSession(); // Reschedule the next reset if necessary
+        }
+
+        int hours = (int) (millisUntilReset / (1000 * 60 * 60));
+        int minutes = (int) ((millisUntilReset / (1000 * 60)) % 60);
+        int seconds = (int) ((millisUntilReset / 1000) % 60);
+
+        String timeRemaining = String.format("Next Reset: %02d:%02d:%02d", hours, minutes, seconds);
+        countdownTextView.setText(timeRemaining);
+    }
+
+    private void stopDynamicCountdown() {
+        if (countdownHandler != null) {
+            countdownHandler.removeCallbacks(countdownRunnable);
+        }
+    }
+
+    private void updateCountdown(TextView countdownTextView) {
+        long millisUntilReset = objectiveManager.getMillisUntilNextReset();
+
+        if (millisUntilReset < 0) {
+            // If time is negative, force it to 0 and set the next reset time
+            millisUntilReset = 0;
+            objectiveManager.startSession(); // Reschedule the next reset
+        }
+
+        int hours = (int) (millisUntilReset / (1000 * 60 * 60));
+        int minutes = (int) ((millisUntilReset / (1000 * 60)) % 60);
+        int seconds = (int) ((millisUntilReset / 1000) % 60);
+
+        String timeRemaining = String.format("TIME LEFT : %02d:%02d:%02d", hours, minutes, seconds);
+        countdownTextView.setText(timeRemaining);
+    }
+
+
+
+    private void addObjectiveToView(LinearLayout objectivesContainer, Objective objective) {
+
+        View objectivesContent = getLayoutInflater().inflate(R.layout.objectives_entry, objectivesContainer, false);
+
+
+        CheckBox objectiveCheckbox = objectivesContent.findViewById(R.id.objCheckbox);
+
+        TextView objectiveDescription = objectivesContent.findViewById(R.id.descriptionObj);
+        TextView objectiveDescription1 = objectivesContent.findViewById(R.id.descriptionObj1);
+        TextView objectiveDescription2 = objectivesContent.findViewById(R.id.descriptionObj2);
+
+        TextView objectiveProgress = objectivesContent.findViewById(R.id.progressTextObj);
+        TextView objectiveProgress1 = objectivesContent.findViewById(R.id.progressTextObj1);
+        TextView objectiveProgress2 = objectivesContent.findViewById(R.id.progressTextObj2);
+
+        TextView objectiveReward = objectivesContent.findViewById(R.id.rewardTextObj);
+        TextView objectiveReward1 = objectivesContent.findViewById(R.id.rewardTextObj1);
+        TextView objectiveReward2 = objectivesContent.findViewById(R.id.rewardTextObj2);
+
+        if (objective.getType().equals(ObjectiveType.NO_MISS)) {
+            objectiveDescription.setText(objective.getDescription());
+            objectiveDescription1.setText(objective.getDescription());
+            objectiveDescription2.setText(objective.getDescription());
+
+            objectiveDescription.setTextSize(15);
+            objectiveDescription1.setTextSize(15);
+            objectiveDescription2.setTextSize(15);
+
+        }
+
+
+        objectiveDescription.setText(objective.getDescription());
+        objectiveDescription1.setText(objective.getDescription());
+        objectiveDescription2.setText(objective.getDescription());
+
+        String progressString = objective.getCurrentProgress() + "/" + objective.getTargetAmount() + " " + objective.getTargetDescriptor();
+
+        objectiveProgress.setText(progressString);
+        objectiveProgress1.setText(progressString);
+        objectiveProgress2.setText(progressString);
+
+        String rewardString = "Reward: " + objective.getRewardXP() + " XP";
+
+        objectiveReward.setText(rewardString);
+        objectiveReward1.setText(rewardString);
+        objectiveReward2.setText(rewardString);
+
+
+        objectiveCheckbox.setChecked(objective.isCompleted());
+
+
+        objectivesContent.setOnClickListener(v ->
+        {
+            if (objective.isCompleted() && !objective.isClaimed()) {
+                int xp = objectiveManager.claimObjectiveReward(objective,objective.getClassification());
+                progressManager.addXP(xp);
+                progressManager.saveProgress();
+                objectiveManager.saveObjectives();
+
+                objectiveCheckbox.setChecked(true);
+                objective.setClaimed(true);
+                objectiveReward.setText("Reward Claimed");
+                objectiveReward1.setText("Reward Claimed");
+                objectiveReward2.setText("Reward Claimed");
+
+                TextView compObj = findViewById(R.id.completeObjectiveText);
+                TextView compObj1 = findViewById(R.id.completeObjectiveText1);
+                TextView compObj2 = findViewById(R.id.completeObjectiveText2);
+
+                int countNeeded = objectiveManager.getCountNeededForTier();
+
+                String compObjString = "COMPLETE " + countNeeded  + " OBJECTIVES TO UNLOCK NEW CHALLENGES";
+
+                compObj.setText(compObjString);
+                compObj1.setText(compObjString);
+                compObj2.setText(compObjString);
+
+            }
+        });
+
+        objectivesContainer.addView(objectivesContent);
+
+
+    }
+
+    private void setPaused() {
+        isPaused = true;
+
+        if (gameTimer != null) {
+            gameTimer.cancel();
+            timeRemainingOnPause = timeLeftInMillis;
+        }
+
+        soundPool.autoPause();
+        mediaPlayer.pause();
+
+        gridLayout.setEnabled(false);
+        findViewById(R.id.freezePowerUp).setEnabled(false);
+        findViewById(R.id.clearPowerUp).setEnabled(false);
+        findViewById(R.id.timePowerUp).setEnabled(false);
+
+    }
+
+    private void setResume() {
+        isPaused = false;
+        soundPool.autoResume();
+        mediaPlayer.start();
+        timeLeftInMillis = timeRemainingOnPause;
+
+        if (!isTimerFrozen) {
+            timeLeftInMillis = timeRemainingOnPause;
+            startGameTimer(0);
+        }
+        findViewById(R.id.freezePowerUp).setEnabled(true);
+        findViewById(R.id.clearPowerUp).setEnabled(true);
+        findViewById(R.id.timePowerUp).setEnabled(true);
+    }
+
     private void pauseGame() {
         isPaused = true;
+
+        objIcon.setVisibility(View.GONE);
+        livesIcon.setVisibility(View.GONE);
+        objCount.setVisibility(View.GONE);
+        liveCount.setVisibility(View.GONE);
 
         if (pauseMenuOverlay.getChildCount() == 0) {
             pauseMenuOverlay.addView(pauseMenuContent);
@@ -201,6 +505,30 @@ public class GameActivity extends AppCompatActivity {
         findViewById(R.id.timePowerUp).setEnabled(false);
     }
 
+    private void resumeGame() {
+        isPaused = false;
+
+
+        objIcon.setVisibility(View.VISIBLE);
+        livesIcon.setVisibility(View.VISIBLE);
+        objCount.setVisibility(View.VISIBLE);
+        liveCount.setVisibility(View.VISIBLE);
+
+
+        pauseMenuOverlay.setVisibility(View.GONE);
+        soundPool.autoResume();
+        mediaPlayer.start();
+        timeLeftInMillis = timeRemainingOnPause;
+
+        if (!isTimerFrozen) {
+            timeLeftInMillis = timeRemainingOnPause;
+            startGameTimer(0);
+        }
+        findViewById(R.id.freezePowerUp).setEnabled(true);
+        findViewById(R.id.clearPowerUp).setEnabled(true);
+        findViewById(R.id.timePowerUp).setEnabled(true);
+    }
+
 
     private void showSettingsMenu() {
         if (settingOverlay.getChildCount() == 0) {
@@ -219,10 +547,14 @@ public class GameActivity extends AppCompatActivity {
         CheckBox musicCheckBox = settingsMenuContent.findViewById(R.id.musicCheckBox);
         CheckBox soundEffectsCheckBox = settingsMenuContent.findViewById(R.id.soundEffectCheckBox);
         View saveButton = settingsMenuContent.findViewById(R.id.saveButton);
-        View exitButton = settingsMenuContent.findViewById(R.id.exitButton);
+        ImageView exitButton = settingsMenuContent.findViewById(R.id.exit_ButtonSettings);
         TextView settingsSavedMessage = settingsMenuContent.findViewById(R.id.save_success_text);
         TextView soundEffectPercent = settingsMenuContent.findViewById(R.id.sound_effects_percentage);
         TextView musicPercent = settingsMenuContent.findViewById(R.id.music_percentage);
+
+        View oldExit = settingsMenuContent.findViewById(R.id.exitLayout);
+
+        oldExit.setVisibility(View.GONE);
 
         loadSettings(musicSeekBar, soundEffectsSeekBar, musicCheckBox, soundEffectsCheckBox, soundEffectPercent, musicPercent);
 
@@ -359,18 +691,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
-    private void resumeGame() {
-        isPaused = false;
-        pauseMenuOverlay.setVisibility(View.GONE);
-        soundPool.autoResume();
-        mediaPlayer.start();
-        timeLeftInMillis = timeRemainingOnPause;
-        startGameTimer(0);
-        findViewById(R.id.freezePowerUp).setEnabled(true);
-        findViewById(R.id.clearPowerUp).setEnabled(true);
-        findViewById(R.id.timePowerUp).setEnabled(true);
-    }
-
     private int calculateScore(int level, long remainingTimeInMillis, int accuracy) {
         int basePoints = level * 10;
         int speedBonus = (int) (remainingTimeInMillis / 1000) * 2;
@@ -402,11 +722,45 @@ public class GameActivity extends AppCompatActivity {
         gridLayout.removeAllViews();
 
 
+        Log.e("Correct Taps", "Taps for round: " + correctTaps);
+
+
         int accuracy = (int) (((double) correctTaps / totalTaps) * 100);
 
         int levelScore = calculateScore(currentLevel, timeLeftInMillis, accuracy);
 
         totalScore += levelScore;
+
+
+        int targetDaily =  objectiveManager.getObjectiveByType(ObjectiveType.ACHIEVE_COMBO,"daily").getTargetAmount();
+
+        if (comboCounter >= targetDaily) {
+            objectiveManager.updateObjectiveProgress(ObjectiveType.ACHIEVE_COMBO, targetDaily,"daily");
+        }
+
+        if (accuracy == 100) {
+            objectiveManager.updateObjectiveProgress(ObjectiveType.NO_MISS, 1,"daily");
+        }
+
+        if (currencyManager.getBeatCoins() == objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS,"daily").getTargetAmount()) {
+            objectiveManager.updateObjectiveProgress(ObjectiveType.COLLECT_COINS, objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS,"daily").getTargetAmount(),"daily");
+        }
+
+
+        int target =  objectiveManager.getObjectiveByType(ObjectiveType.ACHIEVE_COMBO,"daily").getTargetAmount();
+
+        if (comboCounter >= target) {
+            objectiveManager.updateObjectiveProgress(ObjectiveType.ACHIEVE_COMBO, target,"daily");
+        }
+
+        if (accuracy == 100) {
+            objectiveManager.updateObjectiveProgress(ObjectiveType.NO_MISS, 1,"daily");
+        }
+
+        if (currencyManager.getBeatCoins() == objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS,"daily").getTargetAmount()) {
+            objectiveManager.updateObjectiveProgress(ObjectiveType.COLLECT_COINS, objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS,"daily").getTargetAmount(),"daily");
+        }
+
 
         if (isTimerFrozen) {
             freezeHandler.removeCallbacks(unfreezeRunnable);
@@ -430,6 +784,29 @@ public class GameActivity extends AppCompatActivity {
         playBackgroundTrack();
 
         applySettings();
+
+
+
+        objectiveManager.updateObjectiveProgress(ObjectiveType.TAP_TILES, correctTaps,"regular");
+        objectiveManager.updateObjectiveProgress(ObjectiveType.USE_POWERUPS, powerUpUse,"regular");
+        objectiveManager.updateObjectiveProgress(ObjectiveType.CLEAR_LEVELS, 1,"regular");
+
+        objectiveManager.updateObjectiveProgress(ObjectiveType.TAP_TILES, correctTaps,"daily");
+        objectiveManager.updateObjectiveProgress(ObjectiveType.USE_POWERUPS, powerUpUse,"daily");
+        objectiveManager.updateObjectiveProgress(ObjectiveType.CLEAR_LEVELS, 1,"daily");
+
+        TextView completedCount = findViewById(R.id.objectiveCountGame);
+
+        objectivesOverlay.setVisibility(View.GONE);
+        objectivesOverlay.removeAllViews();
+        countText = String.valueOf(objectiveManager.getCompletedObjectives());
+        completedCount.setText(countText);
+
+        correctTaps = 0;
+        totalTaps = 0;
+
+
+
     }
 
     private void applyGradient(TextView title) {
@@ -520,7 +897,6 @@ public class GameActivity extends AppCompatActivity {
         }
 
         String trackName = currentSong + "_level_" + level + "_v" + currentVariation;
-        Log.e("Track", "Track Name: " + trackName);
         @SuppressLint("DiscouragedApi") int trackResId = getResources().getIdentifier(trackName, "raw", getPackageName());
 
         if (mediaPlayer != null) {
@@ -594,17 +970,22 @@ public class GameActivity extends AppCompatActivity {
             if (tile.getX() == x && tile.getY() == y) {
                 if (!tile.isInitiallyToggled()) {
                     totalTaps++;
+                    comboCounter = 0;
                     return;
                 }
-                tile.toggle();
                 if (tile.isActive()) {
-                    tileButton.setBackgroundColor(ROW_COLORS[y]);
-                } else {
+                    tile.toggle();
                     tileButton.setBackgroundColor(Color.TRANSPARENT);
                     int soundToPlay = random.nextBoolean() ? tilePressSoundId1 : tilePressSoundId2;
                     playSound(soundToPlay);
                     correctTaps++;
+                    comboCounter++;
                     totalTaps++;
+                    Log.e("Combo Check","Combo Counter: " + comboCounter);
+
+                } else {
+                    tile.toggle();
+                    tileButton.setBackgroundColor(ROW_COLORS[y]);
                 }
             }
         }
@@ -626,6 +1007,14 @@ public class GameActivity extends AppCompatActivity {
 
 
     private void showGameOver() {
+        objIcon.setVisibility(View.GONE);
+        livesIcon.setVisibility(View.GONE);
+        objCount.setVisibility(View.GONE);
+        liveCount.setVisibility(View.GONE);
+
+        objectiveManager.endSession();
+
+
         if (gameOverMenuOverlay.getChildCount() == 0) {
             View gameOverMenuContent = getLayoutInflater().inflate(R.layout.activity_game_over, gameOverMenuOverlay, false);
             gameOverMenuOverlay.addView(gameOverMenuContent);
@@ -682,6 +1071,7 @@ public class GameActivity extends AppCompatActivity {
 
             applyGradient(title);
 
+
             gameOverMenuContent.findViewById(R.id.playAgainButton).setOnClickListener(v -> {
                 Intent intent = new Intent(GameActivity.this, GameActivity.class);
                 startActivity(intent);
@@ -719,7 +1109,6 @@ public class GameActivity extends AppCompatActivity {
 
     private void submitScoreToLeaderboard(int score) {
         if (PlayGames.getGamesSignInClient(this).isAuthenticated().isSuccessful()) {
-            Log.d("Leaderboard", "Submitting score: " + score);
             PlayGames.getLeaderboardsClient(this)
                     .submitScore(getString(R.string.leaderboard_id), score);
         } else {
@@ -776,6 +1165,8 @@ public class GameActivity extends AppCompatActivity {
             freezeHandler.postDelayed(unfreezeRunnable, freezeDuration);
 
             updatePowerUpCounts();
+            powerUpUse++;
+
         }
     }
 
@@ -787,6 +1178,8 @@ public class GameActivity extends AppCompatActivity {
             playSound(clearSoundId);
             startNewLevel();
             updatePowerUpCounts();
+            powerUpUse++;
+
         }
     }
 
@@ -797,6 +1190,7 @@ public class GameActivity extends AppCompatActivity {
             playSound(addTimeSoundId);
             startGameTimer(15000);
             updatePowerUpCounts();
+            powerUpUse++;
         }
     }
 

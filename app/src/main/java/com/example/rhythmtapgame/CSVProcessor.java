@@ -61,8 +61,7 @@ public class CSVProcessor {
         }
 
         Objects.requireNonNull(tilePositionsMap.get(key)).addAll(tileIndexes);
-        Log.e(TAG, "Key added: " + key);
-        Log.e(TAG, "Tile indexes: " + tileIndexes);
+
     }
 
     private List<Integer> parseIndexes(String indexes) {
@@ -88,7 +87,12 @@ public class CSVProcessor {
         } else {
             key = songName + "_" + level + "_" + variation;
         }
-        Log.e(TAG, "Key for tile positions: " + key);
         return tilePositionsMap.get(key);
+    }
+
+    public int getTileListSize(String songName,int level, int variation) {
+        String key = songName + "_" + level + "_" + variation;
+
+        return tilePositionsMap.get(key).size();
     }
 }

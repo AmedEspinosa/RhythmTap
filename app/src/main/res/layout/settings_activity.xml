@@ -5,6 +5,16 @@
     android:background="#E6000000">
 
 
+    <ImageView
+        android:id="@+id/exit_ButtonSettings"
+        android:layout_width="55dp"
+        android:layout_height="70dp"
+        android:layout_marginStart="310dp"
+        android:layout_marginBottom="658dp"
+        android:contentDescription="Exit Button"
+        android:paddingTop="5dp"
+        android:src="@drawable/exit_button" />
+
     <TextView
         android:id="@+id/settings_title"
         android:layout_width="wrap_content"
@@ -55,6 +65,18 @@
         android:paddingStart="8dp"
         android:paddingEnd="8dp" />
 
+    <TextView
+        android:id="@+id/IOSoundEffect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/soundEffectCheckBox"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="3dp"
+        android:fontFamily="@font/roboto_black"
+        android:text="OFF"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
+
     <SeekBar
         android:id="@+id/sound_effects_volume"
         android:layout_width="match_parent"
@@ -103,6 +125,18 @@
         android:gravity="center_vertical"
         android:paddingStart="8dp"
         android:paddingEnd="8dp" />
+
+    <TextView
+        android:id="@+id/IOMusic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/musicCheckBox"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="3dp"
+        android:fontFamily="@font/roboto_black"
+        android:text="OFF"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp" />
 
     <SeekBar
         android:id="@+id/music_volume"
@@ -193,6 +227,7 @@
     </FrameLayout>
 
     <FrameLayout
+        android:id="@+id/exitLayout"
         android:layout_width="200dp"
         android:layout_height="80dp"
         android:layout_marginStart="80dp"
