@@ -4,28 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_background_shop"
+    android:background="@drawable/gradient_background_inventory"
     android:orientation="vertical">
 
 
     <FrameLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="596dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="648dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="@string/shop"
+            android:text="INVENTORY"
             android:textColor="#2C1C1C"
             android:textSize="48sp"
             android:translationY="4dp" />
@@ -35,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="@string/shop"
+            android:text="INVENTORY"
             android:textColor="#4E3A3A"
             android:textSize="48sp"
             android:translationY="2dp" />
@@ -45,74 +43,218 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="@string/shop"
+            android:text="INVENTORY"
             android:textColor="#FFFFFF"
             android:textSize="48sp" />
     </FrameLayout>
 
 
-    <ScrollView
+    <GridLayout
+        android:id="@+id/inventoryGrid"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:layout_marginTop="93dp"
-        android:layout_marginBottom="120dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
-
-        <LinearLayout
-            android:id="@+id/storeItemsContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="168dp">
-
-        </LinearLayout>
-
-    </ScrollView>
-
-    <FrameLayout
-        android:layout_width="100dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="274dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="641dp"
+        android:layout_height="520dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="83dp"
+        android:layout_marginBottom="121dp"
+        android:alignmentMode="alignMargins"
+        android:columnCount="2"
+        android:padding="16dp"
+        android:rowCount="3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <View
-            android:layout_width="85dp"
-            android:layout_height="65dp"
+        <FrameLayout
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_margin="10dp">
+
+            <ImageView
+                android:id="@+id/livesIcon"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:background="#6A4EB9"
+                android:scaleType="fitCenter"
+                android:src="@drawable/heart_icon" />
+
+            <TextView
+                android:id="@+id/livesCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="110dp"
+                android:layout_marginTop="100dp"
+                android:background="@drawable/circle_red"
+                android:fontFamily="@font/roboto_black"
+                android:gravity="center"
+                android:padding="6dp"
+                android:text="4"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="65dp"
+                android:fontFamily="@font/roboto_black"
+                android:gravity="center"
+                android:text="LIVES"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_margin="10dp">
+
+            <ImageView
+                android:id="@+id/powerupIcons"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:background="#4C49DD"
+                android:scaleType="fitCenter"
+                android:src="@drawable/powerup_combo" />
+
+            <TextView
+                android:id="@+id/powerupCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="110dp"
+                android:layout_marginTop="100dp"
+                android:background="@drawable/circle_red"
+                android:fontFamily="@font/roboto_black"
+                android:gravity="center"
+                android:padding="6dp"
+                android:text="4"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="65dp"
+                android:fontFamily="@font/roboto_black"
+                android:gravity="center"
+                android:text="POWER-UPS"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_row="1"
+            android:layout_column="0"
             android:layout_gravity="center"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="9dp"
-            android:background="@drawable/rounded_background_shadow"
-            android:translationY="4.5dp" />
+            android:layout_margin="10dp">
 
-        <ImageView
-            android:id="@+id/inventory_button"
-            android:layout_width="85dp"
-            android:layout_height="65dp"
-            android:layout_marginStart="15dp"
-            android:background="@drawable/task_tab"
-            android:src="@drawable/inventory_icon" />
+            <ImageView
+                android:id="@+id/songIcon"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:background="#D93232"
+                android:scaleType="fitCenter"
+                android:src="@drawable/song_icon" />
 
-    </FrameLayout>
+            <TextView
+                android:id="@+id/songCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="110dp"
+                android:layout_marginTop="100dp"
+                android:background="@drawable/circle_red"
+                android:fontFamily="@font/roboto_black"
+                android:gravity="center"
+                android:padding="6dp"
+                android:text="4"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="65dp"
+                android:fontFamily="@font/roboto_black"
+                android:gravity="center"
+                android:text="SONGS"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:layout_gravity="center"
+            android:layout_margin="10dp">
+
+            <ImageView
+                android:id="@+id/skinIcon"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:background="#59B937"
+                android:scaleType="fitCenter"
+                android:src="@drawable/skin_icon" />
+
+            <TextView
+                android:id="@+id/skinCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="110dp"
+                android:layout_marginTop="100dp"
+                android:background="@drawable/circle_red"
+                android:fontFamily="@font/roboto_black"
+                android:gravity="center"
+                android:padding="6dp"
+                android:text="4"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="65dp"
+                android:fontFamily="@font/roboto_black"
+                android:gravity="center"
+                android:text="SKINS"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+        </FrameLayout>
+
+
+    </GridLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/navigationMenu"
         android:layout_width="match_parent"
         android:layout_height="116dp"
-        android:layout_marginTop="611dp"
-        android:layout_marginBottom="3dp"
+        android:layout_marginTop="608dp"
+        android:layout_marginBottom="1dp"
         android:background="@drawable/button_background"
         android:gravity="center"
         android:orientation="horizontal"
@@ -326,74 +468,19 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <FrameLayout
-        android:layout_width="100dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="274dp"
-        android:layout_marginBottom="641dp"
+    <ImageView
+        android:id="@+id/exit_button_inventory"
+        android:layout_width="45dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="319dp"
+        android:layout_marginBottom="664dp"
+        android:contentDescription="Exit Button"
+        android:paddingTop="5dp"
+        android:src="@drawable/exit_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <View
-            android:layout_width="85dp"
-            android:layout_height="65dp"
-            android:layout_gravity="center"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4.5dp"
-            android:background="@drawable/rounded_background_shadow_shop"
-            tools:layout_editor_absoluteX="39dp"
-            tools:layout_editor_absoluteY="360dp" />
-
-        <ImageView
-            android:layout_width="85dp"
-            android:layout_height="65dp"
-            android:background="@drawable/coins_tab_shop"
-            android:contentDescription="@string/beat_coin_icon"
-            android:src="@drawable/beat_coins_icon_menu" />
-
-        <TextView
-            android:id="@+id/beatCoinBalanceTextShadow2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="10dp"
-            android:fontFamily="@font/roboto_black"
-            android:text="@string/_1000"
-            android:textColor="#2C1C1C"
-            android:textSize="20sp"
-            android:translationY="3dp" />
-
-        <TextView
-            android:id="@+id/beatCoinBalanceTextShadow1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="10dp"
-            android:fontFamily="@font/roboto_black"
-            android:text="@string/_1000"
-            android:textColor="#4E3A3A"
-            android:textSize="20sp"
-            android:translationY="1.5dp" />
-
-        <TextView
-            android:id="@+id/beatCoinBalanceText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="10dp"
-            android:fontFamily="@font/roboto_black"
-            android:text="@string/_1000"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp" />
-
-
-    </FrameLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

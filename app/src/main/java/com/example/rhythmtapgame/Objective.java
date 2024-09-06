@@ -57,9 +57,7 @@ public class Objective {
         return completed;
     }
 
-
-
-    public boolean isClaimed(){
+    public boolean isClaimed() {
         return claimed;
     }
 

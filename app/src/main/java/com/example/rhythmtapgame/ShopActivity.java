@@ -9,15 +9,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.view.LayoutInflater;
 import android.view.View;
-
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShopActivity extends AppCompatActivity {
-
+    private CurrencyManager currencyManager;
     private LinearLayout storeItemsContainer;
 
     @Override
@@ -27,9 +24,11 @@ public class ShopActivity extends AppCompatActivity {
 
         storeItemsContainer = findViewById(R.id.storeItemsContainer);
 
+        currencyManager = new CurrencyManager(this);
+
         List<ShopEntry> storeItems = new ArrayList<>();
-        storeItems.add(new ShopEntry(R.drawable.beat_coins_icon, "Small Beat Coin Pack", "$0.99","x500","#4C49DD"));
-        storeItems.add(new ShopEntry(R.drawable.beat_coins_mult_icon, "Medium Beat Coin Pack", "$2.99","x2000","#D93232"));
+        storeItems.add(new ShopEntry(R.drawable.beat_coins_icon, "Small Beat Coin Pack", "$0.99", "x500", "#4C49DD"));
+        storeItems.add(new ShopEntry(R.drawable.beat_coins_mult_icon, "Medium Beat Coin Pack", "$2.99", "x2000", "#D93232"));
 
         for (ShopEntry item : storeItems) {
             addItemToStore(item);
@@ -38,7 +37,17 @@ public class ShopActivity extends AppCompatActivity {
         FrameLayout menuButton = findViewById(R.id.playButton);
         FrameLayout leaderBoardButton = findViewById(R.id.leaderboardButton);
 
+        ImageView inventoryButton = findViewById(R.id.inventory_button);
 
+        TextView balance = findViewById(R.id.beatCoinBalanceText);
+        TextView balance1 = findViewById(R.id.beatCoinBalanceTextShadow1);
+        TextView balance2 = findViewById(R.id.beatCoinBalanceTextShadow2);
+
+        int currentCoins = currencyManager.getBeatCoins();
+
+        balance.setText(String.valueOf(currentCoins));
+        balance1.setText(String.valueOf(currentCoins));
+        balance2.setText(String.valueOf(currentCoins));
 
         menuButton.setOnClickListener(view -> {
             Intent intent = new Intent(ShopActivity.this, MainActivity.class);
@@ -50,9 +59,12 @@ public class ShopActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        inventoryButton.setOnClickListener(view -> {
+            Intent intent = new Intent(ShopActivity.this, InventoryActivity.class);
+            startActivity(intent);
+        });
     }
 
-    // Method to inflate the store item layout and add it to the container
     private void addItemToStore(ShopEntry item) {
         LayoutInflater inflater = LayoutInflater.from(this);
         View storeItemView = inflater.inflate(R.layout.shop_entry, storeItemsContainer, false);
@@ -72,9 +84,6 @@ public class ShopActivity extends AppCompatActivity {
 
         View background = storeItemView.findViewById(R.id.itemBackground);
 
-
-
-        // Set the values for the item
         itemImage.setImageResource(item.getImageResourceId());
         itemName.setText(item.getName());
         itemName1.setText(item.getName());
@@ -90,8 +99,6 @@ public class ShopActivity extends AppCompatActivity {
 
         background.setBackgroundColor(Color.parseColor(item.getBackgroundColor()));
 
-
-        // Add to the container
         storeItemsContainer.addView(storeItemView);
     }
 }

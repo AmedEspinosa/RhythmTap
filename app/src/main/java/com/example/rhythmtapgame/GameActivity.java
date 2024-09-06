@@ -110,7 +110,6 @@ public class GameActivity extends AppCompatActivity {
     private int countDownId;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,20 +122,17 @@ public class GameActivity extends AppCompatActivity {
         progressManager = new PlayerProgressManager(this);
         previousRank = progressManager.getRank();
 
-
         sharedPreferences = getSharedPreferences("GameSettings", MODE_PRIVATE);
 
         currencyManager = new CurrencyManager(this);
 
         objectiveManager = new ObjectiveManager(this);
 
-
         objectiveManager.startSession();
 
         objCount = findViewById(R.id.objectiveCountGame);
 
         countText = String.valueOf(objectiveManager.getCompletedObjectives());
-
 
         objCount.setText(countText);
 
@@ -147,11 +143,9 @@ public class GameActivity extends AppCompatActivity {
 
         objectivesButton = findViewById(R.id.objectives_button_game);
 
-
         objectivesButton.setOnClickListener(v -> showObjectives());
 
         objectivesOverlay = findViewById(R.id.objectiveOverlayGame);
-
 
         pauseMenuOverlay = findViewById(R.id.pauseMenuOverlay);
         gameOverMenuOverlay = findViewById(R.id.gameOverMenuOverlay);
@@ -198,7 +192,7 @@ public class GameActivity extends AppCompatActivity {
         addTimeSoundId = soundPool.load(this, R.raw.add_time_sound, 1);
         tilePressSoundId1 = soundPool.load(this, R.raw.bubble_1, 0);
         tilePressSoundId2 = soundPool.load(this, R.raw.bubble_2, 0);
-        lowTimeSoundID = soundPool.load(this,R.raw.clock_ticking,0);
+        lowTimeSoundID = soundPool.load(this, R.raw.clock_ticking, 0);
 
         soundIDs = new ArrayList<>();
 
@@ -223,10 +217,7 @@ public class GameActivity extends AppCompatActivity {
             setUpObjectives(objectivesContent);
 
             startDynamicCountdown();
-
-
         }
-
         objectivesOverlay.setVisibility(View.VISIBLE);
     }
 
@@ -238,7 +229,6 @@ public class GameActivity extends AppCompatActivity {
         TextView compObj1 = objectivesContent.findViewById(R.id.completeObjectiveText1);
         TextView compObj2 = objectivesContent.findViewById(R.id.completeObjectiveText2);
 
-
         countdownTextView = objectivesContent.findViewById(R.id.timeLeftObj);
 
         updateCountdown(countdownTextView);
@@ -248,7 +238,6 @@ public class GameActivity extends AppCompatActivity {
         objCount.setVisibility(View.GONE);
         liveCount.setVisibility(View.GONE);
 
-
         int countNeeded = objectiveManager.getCountNeededForTier();
 
         String compObjString = "COMPLETE " + countNeeded + " OBJECTIVES TO UNLOCK NEW CHALLENGES";
@@ -256,7 +245,6 @@ public class GameActivity extends AppCompatActivity {
         compObj.setText(compObjString);
         compObj1.setText(compObjString);
         compObj2.setText(compObjString);
-
 
         List<Objective> regularObjectives = objectiveManager.getRegularObjectives();
         for (Objective obj : regularObjectives) {
@@ -277,7 +265,6 @@ public class GameActivity extends AppCompatActivity {
 
             TextView completedCount = findViewById(R.id.objectiveCountGame);
 
-
             objIcon.setVisibility(View.VISIBLE);
             livesIcon.setVisibility(View.VISIBLE);
             objCount.setVisibility(View.VISIBLE);
@@ -287,9 +274,7 @@ public class GameActivity extends AppCompatActivity {
             objectivesOverlay.removeAllViews();
             countText = String.valueOf(objectiveManager.getCompletedObjectives());
             completedCount.setText(countText);
-
         });
-
     }
 
     private void startDynamicCountdown() {
@@ -344,11 +329,9 @@ public class GameActivity extends AppCompatActivity {
     }
 
 
-
     private void addObjectiveToView(LinearLayout objectivesContainer, Objective objective) {
 
         View objectivesContent = getLayoutInflater().inflate(R.layout.objectives_entry, objectivesContainer, false);
-
 
         CheckBox objectiveCheckbox = objectivesContent.findViewById(R.id.objCheckbox);
 
@@ -372,7 +355,6 @@ public class GameActivity extends AppCompatActivity {
             objectiveDescription.setTextSize(15);
             objectiveDescription1.setTextSize(15);
             objectiveDescription2.setTextSize(15);
-
         }
 
 
@@ -392,14 +374,12 @@ public class GameActivity extends AppCompatActivity {
         objectiveReward1.setText(rewardString);
         objectiveReward2.setText(rewardString);
 
-
         objectiveCheckbox.setChecked(objective.isCompleted());
-
 
         objectivesContent.setOnClickListener(v ->
         {
             if (objective.isCompleted() && !objective.isClaimed()) {
-                int xp = objectiveManager.claimObjectiveReward(objective,objective.getClassification());
+                int xp = objectiveManager.claimObjectiveReward(objective, objective.getClassification());
                 progressManager.addXP(xp);
                 progressManager.saveProgress();
                 objectiveManager.saveObjectives();
@@ -410,24 +390,22 @@ public class GameActivity extends AppCompatActivity {
                 objectiveReward1.setText("Reward Claimed");
                 objectiveReward2.setText("Reward Claimed");
 
+                objectiveReward.setTextColor(Color.parseColor("#F9DA65"));
+
                 TextView compObj = findViewById(R.id.completeObjectiveText);
                 TextView compObj1 = findViewById(R.id.completeObjectiveText1);
                 TextView compObj2 = findViewById(R.id.completeObjectiveText2);
 
                 int countNeeded = objectiveManager.getCountNeededForTier();
 
-                String compObjString = "COMPLETE " + countNeeded  + " OBJECTIVES TO UNLOCK NEW CHALLENGES";
+                String compObjString = "COMPLETE " + countNeeded + " OBJECTIVES TO UNLOCK NEW CHALLENGES";
 
                 compObj.setText(compObjString);
                 compObj1.setText(compObjString);
                 compObj2.setText(compObjString);
-
             }
         });
-
         objectivesContainer.addView(objectivesContent);
-
-
     }
 
     private void setPaused() {
@@ -512,12 +490,10 @@ public class GameActivity extends AppCompatActivity {
     private void resumeGame() {
         isPaused = false;
 
-
         objIcon.setVisibility(View.VISIBLE);
         livesIcon.setVisibility(View.VISIBLE);
         objCount.setVisibility(View.VISIBLE);
         liveCount.setVisibility(View.VISIBLE);
-
 
         pauseMenuOverlay.setVisibility(View.GONE);
         soundPool.autoResume();
@@ -656,7 +632,6 @@ public class GameActivity extends AppCompatActivity {
         musicPercent.setText(isMusicOn ? musicText : "0%");
     }
 
-
     private void saveSettings(SeekBar musicSeekBar, SeekBar soundEffectsSeekBar, CheckBox musicCheckBox, CheckBox soundEffectsCheckBox, TextView settingsSavedMessage, TextView soundEffectPercent, TextView musicPercent) {
         SharedPreferences sharedPreferences = getSharedPreferences("GameSettings", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -694,7 +669,6 @@ public class GameActivity extends AppCompatActivity {
         mediaPlayer.setVolume(musicVolume / 100f, musicVolume / 100f);
     }
 
-
     private int calculateScore(int level, long remainingTimeInMillis, int accuracy) {
         int basePoints = level * 10;
         int speedBonus = (int) (remainingTimeInMillis / 1000) * 2;
@@ -728,43 +702,39 @@ public class GameActivity extends AppCompatActivity {
 
         Log.e("Correct Taps", "Taps for round: " + correctTaps);
 
-
         int accuracy = (int) (((double) correctTaps / totalTaps) * 100);
 
         int levelScore = calculateScore(currentLevel, timeLeftInMillis, accuracy);
 
         totalScore += levelScore;
 
-
-        int targetDaily =  objectiveManager.getObjectiveByType(ObjectiveType.ACHIEVE_COMBO,"daily").getTargetAmount();
+        int targetDaily = objectiveManager.getObjectiveByType(ObjectiveType.ACHIEVE_COMBO, "daily").getTargetAmount();
 
         if (comboCounter >= targetDaily) {
-            objectiveManager.updateObjectiveProgress(ObjectiveType.ACHIEVE_COMBO, targetDaily,"daily");
+            objectiveManager.updateObjectiveProgress(ObjectiveType.ACHIEVE_COMBO, targetDaily, "daily");
         }
 
         if (accuracy == 100) {
-            objectiveManager.updateObjectiveProgress(ObjectiveType.NO_MISS, 1,"daily");
+            objectiveManager.updateObjectiveProgress(ObjectiveType.NO_MISS, 1, "daily");
         }
 
-        if (currencyManager.getBeatCoins() == objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS,"daily").getTargetAmount()) {
-            objectiveManager.updateObjectiveProgress(ObjectiveType.COLLECT_COINS, objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS,"daily").getTargetAmount(),"daily");
+        if (currencyManager.getBeatCoins() == objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "daily").getTargetAmount()) {
+            objectiveManager.updateObjectiveProgress(ObjectiveType.COLLECT_COINS, objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "daily").getTargetAmount(), "daily");
         }
 
-
-        int target =  objectiveManager.getObjectiveByType(ObjectiveType.ACHIEVE_COMBO,"daily").getTargetAmount();
+        int target = objectiveManager.getObjectiveByType(ObjectiveType.ACHIEVE_COMBO, "daily").getTargetAmount();
 
         if (comboCounter >= target) {
-            objectiveManager.updateObjectiveProgress(ObjectiveType.ACHIEVE_COMBO, target,"daily");
+            objectiveManager.updateObjectiveProgress(ObjectiveType.ACHIEVE_COMBO, target, "daily");
         }
 
         if (accuracy == 100) {
-            objectiveManager.updateObjectiveProgress(ObjectiveType.NO_MISS, 1,"daily");
+            objectiveManager.updateObjectiveProgress(ObjectiveType.NO_MISS, 1, "daily");
         }
 
-        if (currencyManager.getBeatCoins() == objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS,"daily").getTargetAmount()) {
-            objectiveManager.updateObjectiveProgress(ObjectiveType.COLLECT_COINS, objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS,"daily").getTargetAmount(),"daily");
+        if (currencyManager.getBeatCoins() == objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "daily").getTargetAmount()) {
+            objectiveManager.updateObjectiveProgress(ObjectiveType.COLLECT_COINS, objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "daily").getTargetAmount(), "daily");
         }
-
 
         if (isTimerFrozen) {
             freezeHandler.removeCallbacks(unfreezeRunnable);
@@ -789,15 +759,13 @@ public class GameActivity extends AppCompatActivity {
 
         applySettings();
 
+        objectiveManager.updateObjectiveProgress(ObjectiveType.TAP_TILES, correctTaps, "regular");
+        objectiveManager.updateObjectiveProgress(ObjectiveType.USE_POWERUPS, powerUpUse, "regular");
+        objectiveManager.updateObjectiveProgress(ObjectiveType.CLEAR_LEVELS, 1, "regular");
 
-
-        objectiveManager.updateObjectiveProgress(ObjectiveType.TAP_TILES, correctTaps,"regular");
-        objectiveManager.updateObjectiveProgress(ObjectiveType.USE_POWERUPS, powerUpUse,"regular");
-        objectiveManager.updateObjectiveProgress(ObjectiveType.CLEAR_LEVELS, 1,"regular");
-
-        objectiveManager.updateObjectiveProgress(ObjectiveType.TAP_TILES, correctTaps,"daily");
-        objectiveManager.updateObjectiveProgress(ObjectiveType.USE_POWERUPS, powerUpUse,"daily");
-        objectiveManager.updateObjectiveProgress(ObjectiveType.CLEAR_LEVELS, 1,"daily");
+        objectiveManager.updateObjectiveProgress(ObjectiveType.TAP_TILES, correctTaps, "daily");
+        objectiveManager.updateObjectiveProgress(ObjectiveType.USE_POWERUPS, powerUpUse, "daily");
+        objectiveManager.updateObjectiveProgress(ObjectiveType.CLEAR_LEVELS, 1, "daily");
 
         TextView completedCount = findViewById(R.id.objectiveCountGame);
 
@@ -808,9 +776,6 @@ public class GameActivity extends AppCompatActivity {
 
         correctTaps = 0;
         totalTaps = 0;
-
-
-
     }
 
     private void applyGradient(TextView title) {
@@ -837,7 +802,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setupGrid() {
-
         int gridRows = 16;
         gridLayout.setRowCount(gridRows);
 
@@ -859,7 +823,6 @@ public class GameActivity extends AppCompatActivity {
                 tileButton.setOnClickListener(view -> onTileTapped(tileButton, finalI, finalJ));
 
                 BeatTile tile = new BeatTile(i, j);
-
 
                 beatTiles.add(tile);
 
@@ -966,10 +929,7 @@ public class GameActivity extends AppCompatActivity {
                 soundPool.stop(countDownId);
                 soundPlayed = false;
             }
-
-
         }
-
     }
 
     private void getSong() {
@@ -985,7 +945,6 @@ public class GameActivity extends AppCompatActivity {
         int soundEffectsVolume = sharedPreferences.getInt("soundEffectsVolume", 100);
         soundPool.play(id, soundEffectsVolume / 100f, soundEffectsVolume / 100f, 0, 0, 1);
     }
-
 
     private void onTileTapped(Button tileButton, int x, int y) {
         for (BeatTile tile : beatTiles) {
@@ -1003,7 +962,7 @@ public class GameActivity extends AppCompatActivity {
                     correctTaps++;
                     comboCounter++;
                     totalTaps++;
-                    Log.e("Combo Check","Combo Counter: " + comboCounter);
+                    Log.e("Combo Check", "Combo Counter: " + comboCounter);
 
                 } else {
                     tile.toggle();
@@ -1035,7 +994,6 @@ public class GameActivity extends AppCompatActivity {
         liveCount.setVisibility(View.GONE);
 
         objectiveManager.endSession();
-
 
         if (gameOverMenuOverlay.getChildCount() == 0) {
             View gameOverMenuContent = getLayoutInflater().inflate(R.layout.activity_game_over, gameOverMenuOverlay, false);
@@ -1093,17 +1051,21 @@ public class GameActivity extends AppCompatActivity {
 
             applyGradient(title);
 
-
-            gameOverMenuContent.findViewById(R.id.playAgainButton).setOnClickListener(v -> {
-                Intent intent = new Intent(GameActivity.this, GameActivity.class);
-                startActivity(intent);
-                finish();
-            });
-            gameOverMenuContent.findViewById(R.id.mainMenuButtonOver).setOnClickListener(v -> {
-                Intent intent = new Intent(GameActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            });
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    gameOverMenuContent.findViewById(R.id.playAgainButton).setOnClickListener(v -> {
+                        Intent intent = new Intent(GameActivity.this, GameActivity.class);
+                        startActivity(intent);
+                        finish();
+                    });
+                    gameOverMenuContent.findViewById(R.id.mainMenuButtonOver).setOnClickListener(v -> {
+                        Intent intent = new Intent(GameActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    });
+                }
+            }, 1000);
         }
 
         gameOverMenuOverlay.setVisibility(View.VISIBLE);
@@ -1201,7 +1163,6 @@ public class GameActivity extends AppCompatActivity {
             startNewLevel();
             updatePowerUpCounts();
             powerUpUse++;
-
         }
     }
 

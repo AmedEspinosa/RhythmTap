@@ -8,13 +8,16 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.games.leaderboard.LeaderboardScore;
 import com.google.android.gms.games.leaderboard.LeaderboardScoreBuffer;
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.leaderboard.LeaderboardVariant;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,8 +43,6 @@ public class LeaderboardActivity extends AppCompatActivity {
         FrameLayout menuButton = findViewById(R.id.playButton);
         FrameLayout storeButton = findViewById(R.id.shopButton);
 
-
-
         menuButton.setOnClickListener(view -> {
             Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
             startActivity(intent);
@@ -53,7 +54,6 @@ public class LeaderboardActivity extends AppCompatActivity {
         });
 
         leaderboardList = findViewById(R.id.leaderboard_list);
-
 
         fetchLeaderboardData();
         showLeaderboardUI();
@@ -136,7 +136,6 @@ public class LeaderboardActivity extends AppCompatActivity {
         shadow1ScoreView.setText(String.valueOf(entry.getScore()));
         shadow2ScoreView.setText(String.valueOf(entry.getScore()));
     }
-
 
     private void showLeaderboardUI() {
         PlayGames.getLeaderboardsClient(this)
