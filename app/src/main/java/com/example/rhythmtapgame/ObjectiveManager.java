@@ -1,25 +1,20 @@
 package com.example.rhythmtapgame;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
-import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.util.Log;
+
 
 public class ObjectiveManager {
     private List<Objective> regularObjectives;
@@ -205,6 +200,18 @@ public class ObjectiveManager {
                 break;
 
         }
+
+
+            Collections.sort(dailyObjectives, new Comparator<Objective>() {
+                @Override
+                public int compare(Objective o1, Objective o2) {
+                    int typeComparison = o1.getType().compareTo(o2.getType());
+                    if (typeComparison == 0) {
+                        return Integer.compare(o1.getTargetAmount(), o2.getTargetAmount());
+                    }
+                    return typeComparison;
+                }
+            });
         saveObjectives();
 
 

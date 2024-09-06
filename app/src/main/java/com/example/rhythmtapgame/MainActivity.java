@@ -20,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -165,7 +166,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         storeButton.setOnClickListener(view -> {
-            // Handle shop button click
+            Intent intent = new Intent(MainActivity.this,ShopActivity.class);
+            startActivity(intent);
         });
         updateUI();
     }
@@ -479,11 +481,15 @@ public class MainActivity extends AppCompatActivity {
 
         View resumeButton = rankUpMenuContent.findViewById(R.id.resumeButtonLayout);
 
+        ScrollView scrollView = rankUpMenuContent.findViewById(R.id.rewardScrollView);
+
         resumeButton.setVisibility(View.GONE);
 
         rankUpTextLayout.setVisibility(View.GONE);
 
         rewardsTextLayout.setVisibility(View.GONE);
+
+        scrollView.setVisibility(View.GONE);
 
 
         FrameLayout rankViewUpcomingText = rankUpMenuContent.findViewById(R.id.rankViewUpcomingText);
@@ -510,6 +516,7 @@ public class MainActivity extends AppCompatActivity {
         View continueButton = rankUpMenuContent.findViewById(R.id.exit_ButtonRank);
 
         continueButton.setVisibility(View.VISIBLE);
+
 
         bar.setProgress(progress);
 

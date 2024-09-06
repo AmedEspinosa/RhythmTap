@@ -14,11 +14,11 @@
         android:layout_width="55dp"
         android:layout_height="70dp"
         android:layout_marginStart="312dp"
-        android:visibility="gone"
         android:layout_marginBottom="658dp"
         android:contentDescription="Exit Button"
         android:paddingTop="5dp"
         android:src="@drawable/exit_button"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -317,6 +317,30 @@
             android:textSize="45sp" />
     </FrameLayout>
 
+
+    <ScrollView
+        android:id="@+id/rewardScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="290dp"
+        android:layout_marginTop="336dp"
+        android:layout_marginBottom="108dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/rankUpItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="168dp">
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <FrameLayout
         android:id="@+id/rankViewUpcoming"

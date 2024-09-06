@@ -53,7 +53,7 @@ public class GameActivity extends AppCompatActivity {
     private TextView shadow2Score;
     private SoundPool soundPool;
     private int freezeSoundId, clearSoundId, addTimeSoundId;
-    private int tilePressSoundId1, tilePressSoundId2;
+    private int tilePressSoundId1, tilePressSoundId2, lowTimeSoundID;
     private int totalTaps = 0;
     private int correctTaps = 0;
     private int currentLevel = 1;
@@ -106,6 +106,9 @@ public class GameActivity extends AppCompatActivity {
     private TextView countdownTextView;
     private Handler countdownHandler;
     private Runnable countdownRunnable;
+    private boolean soundPlayed = false;
+    private int countDownId;
+
 
 
     @Override
@@ -195,6 +198,7 @@ public class GameActivity extends AppCompatActivity {
         addTimeSoundId = soundPool.load(this, R.raw.add_time_sound, 1);
         tilePressSoundId1 = soundPool.load(this, R.raw.bubble_1, 0);
         tilePressSoundId2 = soundPool.load(this, R.raw.bubble_2, 0);
+        lowTimeSoundID = soundPool.load(this,R.raw.clock_ticking,0);
 
         soundIDs = new ArrayList<>();
 
@@ -948,6 +952,24 @@ public class GameActivity extends AppCompatActivity {
         timerTextView.setText(timeFormatted);
         shadow1Timer.setText(timeFormatted);
         shadow2Timer.setText(timeFormatted);
+
+        if (timeLeftInMillis <= 5999) {
+            timerTextView.setTextColor(Color.parseColor("#D93232"));
+            if (!soundPlayed) {
+                int soundEffectsVolume = sharedPreferences.getInt("soundEffectsVolume", 100);
+                countDownId = soundPool.play(lowTimeSoundID, soundEffectsVolume / 100f, soundEffectsVolume / 100f, 0, 0, 1);
+                soundPlayed = true;
+            }
+        } else {
+            timerTextView.setTextColor(Color.WHITE);
+            if (soundPlayed) {
+                soundPool.stop(countDownId);
+                soundPlayed = false;
+            }
+
+
+        }
+
     }
 
     private void getSong() {

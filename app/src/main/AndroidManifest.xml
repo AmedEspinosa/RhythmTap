@@ -39,6 +39,13 @@
             android:theme="@style/Theme.RhythmTapGame">
         </activity>
 
+        <activity
+            android:name=".ShopActivity"
+            android:screenOrientation="nosensor"
+            android:exported="true"
+            android:theme="@style/Theme.RhythmTapGame">
+        </activity>
+
         <receiver android:name=".ObjectiveResetReceiver"
             android:exported="false">
         </receiver>

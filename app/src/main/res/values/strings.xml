@@ -94,5 +94,8 @@
     <string name="daily_objectives">DAILY OBJECTIVES</string>
     <string name="refresh">REFRESH</string>
     <string name="complete_objectives">COMPLETE 2 OBJECTIVES TO UNLOCK NEW CHALLENGES</string>
+    <string name="beat_coins">BEAT COINS</string>
+    <string name="small_beat_coin_pack">SMALL BEAT COIN PACK</string>
+    <string name="_0_99">$0.99</string>
 
 </resources>

@@ -30,7 +30,7 @@
             android:text="@string/time_left"
             android:textColor="#2C1C1C"
             android:textSize="21sp"
-            android:translationY="5dp" />
+            android:translationY="3dp" />
 
         <TextView
             android:id="@+id/shadow1TimeLeft"
@@ -41,7 +41,7 @@
             android:text="@string/time_left"
             android:textColor="#4E3A3A"
             android:textSize="21sp"
-            android:translationY="2.5dp" />
+            android:translationY="1dp" />
 
         <TextView
             android:id="@+id/timeLeftText"
@@ -93,7 +93,7 @@
             android:text="@string/score_1234567"
             android:textColor="#2C1C1C"
             android:textSize="21sp"
-            android:translationY="5dp" />
+            android:translationY="2dp" />
 
         <TextView
             android:id="@+id/shadow1Score"
@@ -104,7 +104,7 @@
             android:text="@string/score_1234567"
             android:textColor="#4E3A3A"
             android:textSize="21sp"
-            android:translationY="2.5dp" />
+            android:translationY="0.5dp" />
 
         <TextView
             android:id="@+id/score"
@@ -138,7 +138,7 @@
             android:text="@string/lvl_1"
             android:textColor="#2C1C1C"
             android:textSize="21sp"
-            android:translationY="5dp" />
+            android:translationY="2dp" />
 
         <TextView
             android:id="@+id/shadow1Level"
@@ -149,7 +149,7 @@
             android:text="@string/lvl_1"
             android:textColor="#4E3A3A"
             android:textSize="21sp"
-            android:translationY="2.5dp" />
+            android:translationY="1dp" />
 
         <TextView
             android:id="@+id/levelTextView"

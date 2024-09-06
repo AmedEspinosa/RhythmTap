@@ -37,14 +37,10 @@ public class LeaderboardActivity extends AppCompatActivity {
                     }
                 });
 
-        FrameLayout leaderboardButton = findViewById(R.id.leaderboardButton);
         FrameLayout menuButton = findViewById(R.id.playButton);
         FrameLayout storeButton = findViewById(R.id.shopButton);
 
-        leaderboardButton.setOnClickListener(view -> {
-            Intent intent = new Intent(LeaderboardActivity.this, LeaderboardActivity.class);
-            startActivity(intent);
-        });
+
 
         menuButton.setOnClickListener(view -> {
             Intent intent = new Intent(LeaderboardActivity.this, MainActivity.class);
@@ -52,7 +48,8 @@ public class LeaderboardActivity extends AppCompatActivity {
         });
 
         storeButton.setOnClickListener(view -> {
-            // Handle shop button click
+            Intent intent = new Intent(LeaderboardActivity.this, ShopActivity.class);
+            startActivity(intent);
         });
 
         leaderboardList = findViewById(R.id.leaderboard_list);
