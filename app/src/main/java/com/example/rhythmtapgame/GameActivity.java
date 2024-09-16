@@ -22,15 +22,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import androidx.gridlayout.widget.GridLayout;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.PlayGamesSdk;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -58,7 +53,6 @@ public class GameActivity extends AppCompatActivity {
     private int correctTaps = 0;
     private int currentLevel = 1;
     private int powerUpUse = 0;
-    private int levelsCleared = 0;
     private int currentVariation;
     private int totalScore;
     private static final int[] ROW_COLORS = {
@@ -71,15 +65,11 @@ public class GameActivity extends AppCompatActivity {
     };
     private CSVProcessor csvProcessor;
     private String currentSong;
-    private int freezeCount = 3;
-    private int clearCount = 3;
-    private int addTimeCount = 3;
+    private int freezeCount;
+    private int clearCount;
+    private int addTimeCount;
     private boolean isTimerFrozen = false;
-    private Handler freezeHandler = new Handler();
-    private Runnable unfreezeRunnable = () -> {
-        isTimerFrozen = false;
-        startGameTimer(0);
-    };
+    private final Handler freezeHandler = new Handler();
     private boolean isPaused = false;
     private FrameLayout pauseMenuOverlay;
     private FrameLayout gameOverMenuOverlay;
@@ -93,11 +83,7 @@ public class GameActivity extends AppCompatActivity {
     private int previousRank;
     private ObjectiveManager objectiveManager;
     private int comboCounter = 0;
-    private ImageView objectivesButton;
     private FrameLayout objectivesOverlay;
-    private LinearLayout objectivesContainer;
-    private LinearLayout dailyObjectivesContainer;
-    private int currentRank;
     private String countText;
     private TextView objCount;
     private TextView liveCount;
@@ -105,10 +91,11 @@ public class GameActivity extends AppCompatActivity {
     private ImageView livesIcon;
     private TextView countdownTextView;
     private Handler countdownHandler;
-    private Runnable countdownRunnable;
     private boolean soundPlayed = false;
     private int countDownId;
-
+    private InventoryManager inventoryManager;
+    private long remainingFreezeTime = 0;
+    private long freezeStartTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +115,20 @@ public class GameActivity extends AppCompatActivity {
 
         objectiveManager = new ObjectiveManager(this);
 
+        inventoryManager = new InventoryManager(this);
+
+        inventoryManager.updateItemQuantity("powerups", "freeze", 3);
+        inventoryManager.updateItemQuantity("powerups", "clear", 3);
+        inventoryManager.updateItemQuantity("powerups", "addTime", 3);
+
+        inventoryManager.saveInventory();
+
+        freezeCount = inventoryManager.getItemQuantity("powerups", "freeze");
+
+        clearCount = inventoryManager.getItemQuantity("powerups", "clear");
+
+        addTimeCount = inventoryManager.getItemQuantity("powerups", "addTime");
+
         objectiveManager.startSession();
 
         objCount = findViewById(R.id.objectiveCountGame);
@@ -141,9 +142,7 @@ public class GameActivity extends AppCompatActivity {
         objIcon = findViewById(R.id.objectives_button_game);
         livesIcon = findViewById(R.id.lives_button);
 
-        objectivesButton = findViewById(R.id.objectives_button_game);
-
-        objectivesButton.setOnClickListener(v -> showObjectives());
+        objIcon.setOnClickListener(v -> showObjectives());
 
         objectivesOverlay = findViewById(R.id.objectiveOverlayGame);
 
@@ -205,14 +204,12 @@ public class GameActivity extends AppCompatActivity {
         startNewLevel();
     }
 
-
     private void showObjectives() {
         setPaused();
 
         if (objectivesOverlay.getChildCount() == 0) {
             View objectivesContent = getLayoutInflater().inflate(R.layout.objectives_activity, objectivesOverlay, false);
             objectivesOverlay.addView(objectivesContent);
-
 
             setUpObjectives(objectivesContent);
 
@@ -222,8 +219,8 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setUpObjectives(View objectivesContent) {
-        objectivesContainer = objectivesContent.findViewById(R.id.objectives_list);
-        dailyObjectivesContainer = objectivesContent.findViewById(R.id.daily_objectives_list);
+        LinearLayout objectivesContainer = objectivesContent.findViewById(R.id.objectives_list);
+        LinearLayout dailyObjectivesContainer = objectivesContent.findViewById(R.id.daily_objectives_list);
 
         TextView compObj = objectivesContent.findViewById(R.id.completeObjectiveText);
         TextView compObj1 = objectivesContent.findViewById(R.id.completeObjectiveText1);
@@ -238,7 +235,7 @@ public class GameActivity extends AppCompatActivity {
         objCount.setVisibility(View.GONE);
         liveCount.setVisibility(View.GONE);
 
-        int countNeeded = objectiveManager.getCountNeededForTier();
+        int countNeeded = objectiveManager.getObjectivesRemainingForTierUp();
 
         String compObjString = "COMPLETE " + countNeeded + " OBJECTIVES TO UNLOCK NEW CHALLENGES";
 
@@ -277,9 +274,17 @@ public class GameActivity extends AppCompatActivity {
         });
     }
 
+    private final Runnable unfreezeRunnable = () -> {
+        isTimerFrozen = false;
+        startGameTimer(0);
+        if (soundPlayed) {
+            soundPool.resume(countDownId);
+        }
+    };
+
     private void startDynamicCountdown() {
         countdownHandler = new Handler();
-        countdownRunnable = new Runnable() {
+        Runnable countdownRunnable = new Runnable() {
             @Override
             public void run() {
                 updateCountdown();
@@ -305,17 +310,10 @@ public class GameActivity extends AppCompatActivity {
         countdownTextView.setText(timeRemaining);
     }
 
-    private void stopDynamicCountdown() {
-        if (countdownHandler != null) {
-            countdownHandler.removeCallbacks(countdownRunnable);
-        }
-    }
-
     private void updateCountdown(TextView countdownTextView) {
         long millisUntilReset = objectiveManager.getMillisUntilNextReset();
 
         if (millisUntilReset < 0) {
-            // If time is negative, force it to 0 and set the next reset time
             millisUntilReset = 0;
             objectiveManager.startSession(); // Reschedule the next reset
         }
@@ -327,7 +325,6 @@ public class GameActivity extends AppCompatActivity {
         String timeRemaining = String.format("TIME LEFT : %02d:%02d:%02d", hours, minutes, seconds);
         countdownTextView.setText(timeRemaining);
     }
-
 
     private void addObjectiveToView(LinearLayout objectivesContainer, Objective objective) {
 
@@ -357,7 +354,6 @@ public class GameActivity extends AppCompatActivity {
             objectiveDescription2.setTextSize(15);
         }
 
-
         objectiveDescription.setText(objective.getDescription());
         objectiveDescription1.setText(objective.getDescription());
         objectiveDescription2.setText(objective.getDescription());
@@ -379,16 +375,16 @@ public class GameActivity extends AppCompatActivity {
         objectivesContent.setOnClickListener(v ->
         {
             if (objective.isCompleted() && !objective.isClaimed()) {
-                int xp = objectiveManager.claimObjectiveReward(objective, objective.getClassification());
+                int xp = objectiveManager.claimObjectiveReward(objective);
                 progressManager.addXP(xp);
                 progressManager.saveProgress();
                 objectiveManager.saveObjectives();
 
                 objectiveCheckbox.setChecked(true);
                 objective.setClaimed(true);
-                objectiveReward.setText("Reward Claimed");
-                objectiveReward1.setText("Reward Claimed");
-                objectiveReward2.setText("Reward Claimed");
+                objectiveReward.setText(R.string.reward_claimed);
+                objectiveReward1.setText(R.string.reward_claimed);
+                objectiveReward2.setText(R.string.reward_claimed);
 
                 objectiveReward.setTextColor(Color.parseColor("#F9DA65"));
 
@@ -396,7 +392,7 @@ public class GameActivity extends AppCompatActivity {
                 TextView compObj1 = findViewById(R.id.completeObjectiveText1);
                 TextView compObj2 = findViewById(R.id.completeObjectiveText2);
 
-                int countNeeded = objectiveManager.getCountNeededForTier();
+                int countNeeded = objectiveManager.getObjectivesRemainingForTierUp();
 
                 String compObjString = "COMPLETE " + countNeeded + " OBJECTIVES TO UNLOCK NEW CHALLENGES";
 
@@ -416,6 +412,12 @@ public class GameActivity extends AppCompatActivity {
             timeRemainingOnPause = timeLeftInMillis;
         }
 
+        if (isTimerFrozen) {
+            freezeHandler.removeCallbacks(unfreezeRunnable); // pause freeze timer
+            remainingFreezeTime -= (System.currentTimeMillis() - freezeStartTime);
+        }
+
+
         soundPool.autoPause();
         mediaPlayer.pause();
 
@@ -423,7 +425,6 @@ public class GameActivity extends AppCompatActivity {
         findViewById(R.id.freezePowerUp).setEnabled(false);
         findViewById(R.id.clearPowerUp).setEnabled(false);
         findViewById(R.id.timePowerUp).setEnabled(false);
-
     }
 
     private void setResume() {
@@ -432,10 +433,12 @@ public class GameActivity extends AppCompatActivity {
         mediaPlayer.start();
         timeLeftInMillis = timeRemainingOnPause;
 
-        if (!isTimerFrozen) {
-            timeLeftInMillis = timeRemainingOnPause;
+        if (isTimerFrozen && remainingFreezeTime > 0) {
+            freezeHandler.postDelayed(unfreezeRunnable, remainingFreezeTime);
+        } else {
             startGameTimer(0);
         }
+
         findViewById(R.id.freezePowerUp).setEnabled(true);
         findViewById(R.id.clearPowerUp).setEnabled(true);
         findViewById(R.id.timePowerUp).setEnabled(true);
@@ -476,6 +479,12 @@ public class GameActivity extends AppCompatActivity {
             gameTimer.cancel();
             timeRemainingOnPause = timeLeftInMillis;
         }
+
+        if (isTimerFrozen) {
+            freezeHandler.removeCallbacks(unfreezeRunnable); // pause freeze timer
+            remainingFreezeTime -= (System.currentTimeMillis() - freezeStartTime);
+        }
+
         pauseMenuOverlay.setVisibility(View.VISIBLE);
 
         soundPool.autoPause();
@@ -500,15 +509,16 @@ public class GameActivity extends AppCompatActivity {
         mediaPlayer.start();
         timeLeftInMillis = timeRemainingOnPause;
 
-        if (!isTimerFrozen) {
-            timeLeftInMillis = timeRemainingOnPause;
+        if (isTimerFrozen && remainingFreezeTime > 0) {
+            freezeHandler.postDelayed(unfreezeRunnable, remainingFreezeTime);
+        } else {
             startGameTimer(0);
         }
+
         findViewById(R.id.freezePowerUp).setEnabled(true);
         findViewById(R.id.clearPowerUp).setEnabled(true);
         findViewById(R.id.timePowerUp).setEnabled(true);
     }
-
 
     private void showSettingsMenu() {
         if (settingOverlay.getChildCount() == 0) {
@@ -519,7 +529,6 @@ public class GameActivity extends AppCompatActivity {
         }
         settingOverlay.setVisibility(View.VISIBLE);
     }
-
 
     private void setupSettingsMenu(View settingsMenuContent) {
         SeekBar musicSeekBar = settingsMenuContent.findViewById(R.id.music_volume);
@@ -696,9 +705,8 @@ public class GameActivity extends AppCompatActivity {
         getSong();
         currentVariation = getVariationForLevel(currentLevel, currentSong);
 
-        beatTiles.clear(); // Clear previous tiles
+        beatTiles.clear();
         gridLayout.removeAllViews();
-
 
         Log.e("Correct Taps", "Taps for round: " + correctTaps);
 
@@ -722,18 +730,18 @@ public class GameActivity extends AppCompatActivity {
             objectiveManager.updateObjectiveProgress(ObjectiveType.COLLECT_COINS, objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "daily").getTargetAmount(), "daily");
         }
 
-        int target = objectiveManager.getObjectiveByType(ObjectiveType.ACHIEVE_COMBO, "daily").getTargetAmount();
+        int target = objectiveManager.getObjectiveByType(ObjectiveType.ACHIEVE_COMBO, "regular").getTargetAmount();
 
         if (comboCounter >= target) {
-            objectiveManager.updateObjectiveProgress(ObjectiveType.ACHIEVE_COMBO, target, "daily");
+            objectiveManager.updateObjectiveProgress(ObjectiveType.ACHIEVE_COMBO, target, "regular");
         }
 
         if (accuracy == 100) {
-            objectiveManager.updateObjectiveProgress(ObjectiveType.NO_MISS, 1, "daily");
+            objectiveManager.updateObjectiveProgress(ObjectiveType.NO_MISS, 1, "regular");
         }
 
-        if (currencyManager.getBeatCoins() == objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "daily").getTargetAmount()) {
-            objectiveManager.updateObjectiveProgress(ObjectiveType.COLLECT_COINS, objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "daily").getTargetAmount(), "daily");
+        if (currencyManager.getBeatCoins() == objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "regular").getTargetAmount()) {
+            objectiveManager.updateObjectiveProgress(ObjectiveType.COLLECT_COINS, objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "regular").getTargetAmount(), "regular");
         }
 
         if (isTimerFrozen) {
@@ -776,6 +784,11 @@ public class GameActivity extends AppCompatActivity {
 
         correctTaps = 0;
         totalTaps = 0;
+        powerUpUse = 0;
+
+
+        soundPool.stop(countDownId);
+        soundPlayed = false;
     }
 
     private void applyGradient(TextView title) {
@@ -787,16 +800,16 @@ public class GameActivity extends AppCompatActivity {
                 LinearGradient shader = new LinearGradient(
                         0, 0, width, 0,
                         new int[]{
-                                Color.parseColor("#D93232"),  // Red color at 0%
-                                Color.parseColor("#9504AC"),  // Purple color at 34%
-                                Color.parseColor("#FFFFFF")   // White color at 100%
+                                Color.parseColor("#D93232"),
+                                Color.parseColor("#9504AC"),
+                                Color.parseColor("#FFFFFF")
                         },
                         new float[]{0f, 0.34f, 1f},
                         Shader.TileMode.CLAMP);
 
                 paint.setShader(shader);
                 title.setTextColor(Color.WHITE); // Set a base color
-                title.invalidate(); // Force redraw
+                title.invalidate();
             }
         });
     }
@@ -903,6 +916,7 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 submitScoreToLeaderboard(totalScore);
+                inventoryManager.saveInventory();
                 showGameOver();
             }
         }.start();
@@ -962,7 +976,6 @@ public class GameActivity extends AppCompatActivity {
                     correctTaps++;
                     comboCounter++;
                     totalTaps++;
-                    Log.e("Combo Check", "Combo Counter: " + comboCounter);
 
                 } else {
                     tile.toggle();
@@ -1051,20 +1064,17 @@ public class GameActivity extends AppCompatActivity {
 
             applyGradient(title);
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    gameOverMenuContent.findViewById(R.id.playAgainButton).setOnClickListener(v -> {
-                        Intent intent = new Intent(GameActivity.this, GameActivity.class);
-                        startActivity(intent);
-                        finish();
-                    });
-                    gameOverMenuContent.findViewById(R.id.mainMenuButtonOver).setOnClickListener(v -> {
-                        Intent intent = new Intent(GameActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    });
-                }
+            new Handler().postDelayed(() -> {
+                gameOverMenuContent.findViewById(R.id.playAgainButton).setOnClickListener(v -> {
+                    Intent intent = new Intent(GameActivity.this, GameActivity.class);
+                    startActivity(intent);
+                    finish();
+                });
+                gameOverMenuContent.findViewById(R.id.mainMenuButtonOver).setOnClickListener(v -> {
+                    Intent intent = new Intent(GameActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                });
             }, 1000);
         }
 
@@ -1100,7 +1110,6 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-
     private void checkSignInStatus() {
         PlayGames.getGamesSignInClient(this).isAuthenticated()
                 .addOnCompleteListener(task -> {
@@ -1119,7 +1128,6 @@ public class GameActivity extends AppCompatActivity {
         startNewLevel();
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -1128,7 +1136,6 @@ public class GameActivity extends AppCompatActivity {
             soundPool = null;
         }
     }
-
 
     private void setupPowerUpButtons() {
         findViewById(R.id.freezePowerUp).setOnClickListener(v -> useFreezePowerUp());
@@ -1140,13 +1147,15 @@ public class GameActivity extends AppCompatActivity {
 
     private void useFreezePowerUp() {
         if (freezeCount > 0 && !isTimerFrozen) {
+            soundPool.pause(countDownId);
             freezeCount--;
             isTimerFrozen = true;
             gameTimer.cancel();
             playSound(freezeSoundId);
 
-            long freezeDuration = 10000;
-            freezeHandler.postDelayed(unfreezeRunnable, freezeDuration);
+            freezeStartTime = System.currentTimeMillis();
+            remainingFreezeTime = 10000;
+            freezeHandler.postDelayed(unfreezeRunnable, remainingFreezeTime);
 
             updatePowerUpCounts();
             powerUpUse++;
@@ -1179,8 +1188,11 @@ public class GameActivity extends AppCompatActivity {
 
     private void updatePowerUpCounts() {
         ((TextView) findViewById(R.id.freezeCount)).setText(String.valueOf(freezeCount));
+        inventoryManager.updateItemQuantity("powerups", "freeze", freezeCount);
         ((TextView) findViewById(R.id.clearCount)).setText(String.valueOf(clearCount));
+        inventoryManager.updateItemQuantity("powerups", "clear", clearCount);
         ((TextView) findViewById(R.id.addCount)).setText(String.valueOf(addTimeCount));
+        inventoryManager.updateItemQuantity("powerups", "addTime", addTimeCount);
     }
 }
 

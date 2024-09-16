@@ -97,5 +97,9 @@
     <string name="beat_coins">BEAT COINS</string>
     <string name="small_beat_coin_pack">SMALL BEAT COIN PACK</string>
     <string name="_0_99">$0.99</string>
+    <string name="reward_claimed">Reward Claimed</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
+    <string name="quit">QUIT</string>
 
 </resources>

@@ -4,11 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-
+import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 public class InventoryActivity extends AppCompatActivity {
+
+    InventoryManager inventoryManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,8 @@ public class InventoryActivity extends AppCompatActivity {
         FrameLayout shopButton = findViewById(R.id.shopButton);
 
         ImageView exitButton = findViewById(R.id.exit_button_inventory);
+
+        inventoryManager = new InventoryManager(this);
 
         menuButton.setOnClickListener(view -> {
             Intent intent = new Intent(InventoryActivity.this, MainActivity.class);
@@ -41,5 +44,28 @@ public class InventoryActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        setUpInventory();
+    }
+
+    private void setUpInventory(){
+        TextView livesCount = findViewById(R.id.livesCount);
+
+        TextView powerUpCount = findViewById(R.id.powerupCount);
+
+        TextView songCount = findViewById(R.id.songCount);
+
+        TextView skinCount = findViewById(R.id.skinCount);
+
+        int freezeCount = inventoryManager.getItemQuantity("powerups","freeze");
+        int clearCount = inventoryManager.getItemQuantity("powerups","clear");
+        int addTimeCount = inventoryManager.getItemQuantity("powerups","addTime");
+
+        livesCount.setText(String.valueOf(inventoryManager.getCategorySize("lives")));
+
+        powerUpCount.setText(String.valueOf(freezeCount + clearCount + addTimeCount));
+
+        songCount.setText(String.valueOf(inventoryManager.getCategorySize("songs")));
+
+        skinCount.setText(String.valueOf(inventoryManager.getCategorySize("skins")));
     }
 }

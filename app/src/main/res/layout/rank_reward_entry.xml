@@ -15,47 +15,54 @@
         android:src="@drawable/beat_coins_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.088" />
 
     <FrameLayout
         android:layout_width="180dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="57dp"
+        android:layout_height="90dp"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="70dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/rewardItemText2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="75dp"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="30 BEAT COINS"
+            android:gravity="center"
+            android:text="3 Freeze Power-ups"
             android:textColor="#2C1C1C"
             android:textSize="25sp"
-            android:translationY="6dp" />
+            android:translationY="4dp" />
 
         <TextView
             android:id="@+id/rewardItemText1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="75dp"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="30 BEAT COINS"
+            android:gravity="center"
+            android:text="3 Freeze Power-ups"
             android:textColor="#4E3A3A"
             android:textSize="25sp"
-            android:translationY="3dp" />
+            android:translationY="2dp" />
 
         <TextView
             android:id="@+id/rewardItemText"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="75dp"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_black"
-            android:text="30 BEAT COINS"
+            android:gravity="center"
+            android:text="3 Freeze Power-ups"
             android:textColor="#FFFFFF"
             android:textSize="25sp" />
     </FrameLayout>

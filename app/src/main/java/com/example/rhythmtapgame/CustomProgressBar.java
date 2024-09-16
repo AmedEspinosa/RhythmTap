@@ -16,7 +16,7 @@ public class CustomProgressBar extends ProgressBar {
     private Paint paint;
     private RectF rectF;
     private Paint backgroundPaint;
-    private int[] gradientColors = new int[]{
+    private final int[] gradientColors = new int[]{
             0xFF59B937,
             0xFF77EBC8,
             0xFFFF0000,

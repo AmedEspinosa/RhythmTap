@@ -9,66 +9,6 @@
     android:focusable="true">
 
 
-    <ImageView
-        android:id="@+id/exit_ButtonRank"
-        android:layout_width="55dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="312dp"
-        android:layout_marginBottom="658dp"
-        android:contentDescription="Exit Button"
-        android:paddingTop="5dp"
-        android:src="@drawable/exit_button"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <FrameLayout
-        android:id="@+id/rankViewTitleLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="90dp"
-        android:layout_marginStart="82dp"
-        android:layout_marginEnd="81dp"
-        android:layout_marginBottom="620dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/roboto_black"
-            android:text="@string/rank"
-            android:textColor="#2C1C1C"
-            android:textSize="45sp"
-            android:translationY="6dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/roboto_black"
-            android:text="@string/rank"
-            android:textColor="#4E3A3A"
-            android:textSize="45sp"
-            android:translationY="3dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/roboto_black"
-            android:text="@string/rank"
-            android:textColor="#6A4EB9"
-            android:textSize="45sp" />
-    </FrameLayout>
-
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="90dp"
@@ -157,56 +97,6 @@
             android:fontFamily="@font/roboto_black"
             android:text="@string/rank_up"
             android:textColor="#6A4EB9"
-            android:textSize="45sp" />
-    </FrameLayout>
-
-
-    <FrameLayout
-        android:id="@+id/rankViewUpcomingText"
-        android:layout_width="wrap_content"
-        android:layout_height="90dp"
-        android:layout_marginStart="157dp"
-        android:layout_marginTop="300dp"
-        android:layout_marginEnd="157dp"
-        android:layout_marginBottom="307dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-        <TextView
-            android:id="@+id/nextRank2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/roboto_black"
-            android:text="@string/_11"
-            android:textColor="#2C1C1C"
-            android:textSize="45sp"
-            android:translationY="6dp" />
-
-        <TextView
-            android:id="@+id/nextRank1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/roboto_black"
-            android:text="@string/_11"
-            android:textColor="#4E3A3A"
-            android:textSize="45sp"
-            android:translationY="3dp" />
-
-        <TextView
-            android:id="@+id/nextRank"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/roboto_black"
-            android:text="@string/_11"
-            android:textColor="#4C49DD"
             android:textSize="45sp" />
     </FrameLayout>
 
@@ -334,59 +224,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:paddingBottom="10dp"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="168dp">
 
         </LinearLayout>
 
     </ScrollView>
-
-    <FrameLayout
-        android:id="@+id/rankViewUpcoming"
-        android:layout_width="wrap_content"
-        android:layout_height="90dp"
-        android:layout_marginStart="82dp"
-        android:layout_marginTop="270dp"
-        android:layout_marginEnd="74dp"
-        android:layout_marginBottom="394dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.611"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.678">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/roboto_black"
-            android:text="@string/next_rank"
-            android:textColor="#2C1C1C"
-            android:textSize="45sp"
-            android:translationY="6dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/roboto_black"
-            android:text="@string/next_rank"
-            android:textColor="#4E3A3A"
-            android:textSize="45sp"
-            android:translationY="3dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/roboto_black"
-            android:text="@string/next_rank"
-            android:textColor="#FFFFFF"
-            android:textSize="45sp" />
-    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/resumeButtonLayout"

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShopActivity extends AppCompatActivity {
-    private CurrencyManager currencyManager;
     private LinearLayout storeItemsContainer;
 
     @Override
@@ -24,11 +23,19 @@ public class ShopActivity extends AppCompatActivity {
 
         storeItemsContainer = findViewById(R.id.storeItemsContainer);
 
-        currencyManager = new CurrencyManager(this);
+        CurrencyManager currencyManager = new CurrencyManager(this);
 
         List<ShopEntry> storeItems = new ArrayList<>();
-        storeItems.add(new ShopEntry(R.drawable.beat_coins_icon, "Small Beat Coin Pack", "$0.99", "x500", "#4C49DD"));
-        storeItems.add(new ShopEntry(R.drawable.beat_coins_mult_icon, "Medium Beat Coin Pack", "$2.99", "x2000", "#D93232"));
+        storeItems.add(new ShopEntry(R.drawable.beat_coins_icon, "Small Beat Coin Pack", "$0.99", "x500", "#4C49DD", false));
+        storeItems.add(new ShopEntry(R.drawable.beat_coins_mult_icon, "Medium Beat Coin Pack", "$2.99", "x2000", "#D93232", false));
+        storeItems.add(new ShopEntry(R.drawable.ic_freeze, "Freeze Power-Up", "500", "x5", "#4C49DD", true));
+        storeItems.add(new ShopEntry(R.drawable.ic_clear, "Clear Power-Up", "500", "x5", "#D93232", true));
+        storeItems.add(new ShopEntry(R.drawable.ic_time, "Add Time Power-Up", "500", "x5", "#59B937", true));
+        storeItems.add(new ShopEntry(R.drawable.heart_icon, "Lives", "500", "x3", "#6A4EB9", true));
+
+
+
+
 
         for (ShopEntry item : storeItems) {
             addItemToStore(item);
@@ -74,9 +81,48 @@ public class ShopActivity extends AppCompatActivity {
         TextView itemName1 = storeItemView.findViewById(R.id.itemNameShadow1);
         TextView itemName2 = storeItemView.findViewById(R.id.itemNameShadow2);
 
-        TextView itemPrice = storeItemView.findViewById(R.id.itemPrice);
-        TextView itemPrice1 = storeItemView.findViewById(R.id.itemPriceShadow1);
-        TextView itemPrice2 = storeItemView.findViewById(R.id.itemPriceShadow2);
+        if (item.isPurchasableByBeatCoin()) {
+            TextView itemPrice = storeItemView.findViewById(R.id.itemPrice);
+            TextView itemPrice1 = storeItemView.findViewById(R.id.itemPriceShadow1);
+            TextView itemPrice2 = storeItemView.findViewById(R.id.itemPriceShadow2);
+
+            itemPrice.setVisibility(View.GONE);
+            itemPrice1.setVisibility(View.GONE);
+            itemPrice2.setVisibility(View.GONE);
+
+            TextView coinItemPrice = storeItemView.findViewById(R.id.itemPriceBeatCoin);
+            TextView coinItemPrice1 = storeItemView.findViewById(R.id.itemPriceBeatCoinShadow1);
+            TextView coinItemPrice2 = storeItemView.findViewById(R.id.itemPriceBeatCoinShadow2);
+
+            ImageView beatCoinPriceIcon = storeItemView.findViewById(R.id.beatCoinPriceIcon);
+
+
+            coinItemPrice.setVisibility(View.VISIBLE);
+            coinItemPrice1.setVisibility(View.VISIBLE);
+            coinItemPrice2.setVisibility(View.VISIBLE);
+            beatCoinPriceIcon.setVisibility(View.VISIBLE);
+
+
+            coinItemPrice.setText(item.getPrice());
+            coinItemPrice1.setText(item.getPrice());
+            coinItemPrice2.setText(item.getPrice());
+
+
+
+
+        } else {
+
+            TextView itemPrice = storeItemView.findViewById(R.id.itemPrice);
+            TextView itemPrice1 = storeItemView.findViewById(R.id.itemPriceShadow1);
+            TextView itemPrice2 = storeItemView.findViewById(R.id.itemPriceShadow2);
+
+
+            itemPrice.setText(item.getPrice());
+            itemPrice1.setText(item.getPrice());
+            itemPrice2.setText(item.getPrice());
+        }
+
+
 
         TextView itemQuantity = storeItemView.findViewById(R.id.itemQuantity);
         TextView itemQuantity1 = storeItemView.findViewById(R.id.itemQuantityShadow1);
@@ -89,9 +135,6 @@ public class ShopActivity extends AppCompatActivity {
         itemName1.setText(item.getName());
         itemName2.setText(item.getName());
 
-        itemPrice.setText(item.getPrice());
-        itemPrice1.setText(item.getPrice());
-        itemPrice2.setText(item.getPrice());
 
         itemQuantity.setText(item.getItemQuantity());
         itemQuantity1.setText(item.getItemQuantity());

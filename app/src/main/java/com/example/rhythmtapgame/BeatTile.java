@@ -1,7 +1,8 @@
 package com.example.rhythmtapgame;
 
 public class BeatTile {
-    private int x, y;
+    private final int x;
+    private final int y;
     private boolean isActive;
     private boolean initiallyToggled;
 

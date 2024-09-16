@@ -89,10 +89,4 @@ public class CSVProcessor {
         }
         return tilePositionsMap.get(key);
     }
-
-    public int getTileListSize(String songName,int level, int variation) {
-        String key = songName + "_" + level + "_" + variation;
-
-        return tilePositionsMap.get(key).size();
-    }
 }

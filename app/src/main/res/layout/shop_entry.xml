@@ -62,6 +62,21 @@
             android:textSize="25sp" />
     </FrameLayout>
 
+
+    <View
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="78dp"
+        android:layout_marginTop="41dp"
+        android:layout_marginEnd="78dp"
+        android:layout_marginBottom="59dp"
+        android:background="#4E3A3A"
+        android:translationY="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <View
         android:id="@+id/itemBackground"
         android:layout_width="200dp"
@@ -76,25 +91,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+
     <FrameLayout
         android:layout_width="110dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="78dp"
-        android:layout_marginTop="171dp"
-        android:layout_marginEnd="158dp"
-        android:layout_marginBottom="59dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.324"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintVertical_bias="0.764">
 
         <TextView
             android:id="@+id/itemQuantityShadow2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="start"
             android:fontFamily="@font/roboto_black"
             android:text="x10000"
             android:textColor="#2C1C1C"
@@ -105,7 +119,7 @@
             android:id="@+id/itemQuantityShadow1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="start"
             android:fontFamily="@font/roboto_black"
             android:text="x10000"
             android:textColor="#4E3A3A"
@@ -116,7 +130,7 @@
             android:id="@+id/itemQuantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="start"
             android:fontFamily="@font/roboto_black"
             android:text="x10000"
             android:textColor="#FFFFFF"
@@ -180,6 +194,55 @@
             android:text="$100.99"
             android:textColor="#FFFFFF"
             android:textSize="30sp" />
+
+
+        <TextView
+            android:id="@+id/itemPriceBeatCoinShadow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="500"
+            android:layout_marginStart="10dp"
+            android:textColor="#2C1C1C"
+            android:visibility="gone"
+            android:textSize="30sp"
+            android:translationY="4dp" />
+
+        <TextView
+            android:id="@+id/itemPriceBeatCoinShadow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:text="500"
+            android:layout_marginStart="10dp"
+            android:textColor="#4E3A3A"
+            android:textSize="30sp"
+            android:visibility="gone"
+            android:translationY="2dp" />
+
+        <TextView
+            android:id="@+id/itemPriceBeatCoin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_black"
+            android:layout_marginStart="10dp"
+            android:text="500"
+            android:visibility="gone"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp" />
+
+
+        <ImageView
+            android:id="@+id/beatCoinPriceIcon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="15dp"
+            android:visibility="gone"
+            android:src="@drawable/beat_coins_icon" />
     </FrameLayout>
 
 

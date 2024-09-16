@@ -1,18 +1,20 @@
 package com.example.rhythmtapgame;
 
 public class ShopEntry {
-    private int imageResourceId;
-    private String name;
-    private String price;
+    private final int imageResourceId;
+    private final String name;
+    private final String price;
     private String itemQuantity;
     private String backgroundColor;
+    private boolean isPurchasableByBeatCoin;
 
-    public ShopEntry(int imageResourceId, String name, String price, String itemQuantity, String backgroundColor) {
+    public ShopEntry(int imageResourceId, String name, String price, String itemQuantity, String backgroundColor, boolean isPurchasableByBeatCoin) {
         this.imageResourceId = imageResourceId;
         this.name = name;
         this.price = price;
         this.itemQuantity = itemQuantity;
         this.backgroundColor = backgroundColor;
+        this.isPurchasableByBeatCoin = isPurchasableByBeatCoin;
     }
 
     public int getImageResourceId() {
@@ -41,5 +43,13 @@ public class ShopEntry {
 
     public void setBackgroundColor(String backgroundColor) {
         this.backgroundColor = backgroundColor;
+    }
+
+    public boolean isPurchasableByBeatCoin() {
+        return isPurchasableByBeatCoin;
+    }
+
+    public void setIsPurchasableByBeatCoin(boolean isPurchasableByBeatCoin) {
+        this.isPurchasableByBeatCoin = isPurchasableByBeatCoin;
     }
 }

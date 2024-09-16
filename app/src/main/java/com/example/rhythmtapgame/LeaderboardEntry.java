@@ -1,9 +1,9 @@
 package com.example.rhythmtapgame;
 
 public class LeaderboardEntry {
-    private int rank;
-    private String playerName;
-    private long score;
+    private final int rank;
+    private final String playerName;
+    private final long score;
 
     public LeaderboardEntry(int rank, String playerName, long score) {
         this.rank = rank;
