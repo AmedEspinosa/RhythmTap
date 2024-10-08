@@ -23,9 +23,9 @@ public class InventoryManager {
 
     private void initializeDefaultCategories() {
         InventoryCategory powerups = new InventoryCategory("powerups");
-        powerups.addItem(new InventoryItem("freeze", 0));
-        powerups.addItem(new InventoryItem("clear", 0));
-        powerups.addItem(new InventoryItem("addTime", 0));
+        powerups.addItem(new InventoryItem("freeze", "powerups", 0));
+        powerups.addItem(new InventoryItem("clear", "powerups", 0));
+        powerups.addItem(new InventoryItem("addTime", "powerups", 0));
 
         categories.add(powerups);
 
@@ -130,6 +130,22 @@ public class InventoryManager {
         return 0;
 
     }
+
+    public InventoryItem getItemByCategory(String category, String itemName, int quantity) {
+        if (category.equalsIgnoreCase("powerups")) {
+            if (itemName.toLowerCase().contains("freeze")) {
+                return new InventoryItem("freeze", "powerups", quantity);
+            } else if (itemName.toLowerCase().contains("clear")) {
+                return new InventoryItem("clear", "powerups", quantity);
+            } else if (itemName.toLowerCase().contains("add time")) {
+                return new InventoryItem("addTime", "powerups", quantity);
+            }
+        } else if (category.equalsIgnoreCase("lives")) {
+            return new InventoryItem("lives", "lives", quantity);
+        }
+            return null;
+    }
+
 
     public void equipItem(String categoryName, String itemName) {
         InventoryCategory category = getCategoryByName(categoryName);

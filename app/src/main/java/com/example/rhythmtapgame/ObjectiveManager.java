@@ -195,7 +195,7 @@ public class ObjectiveManager {
                     dailyObjectives.add(dailyObj1);
                     break;
                 case 2:
-                    int target2 = random.nextInt(20) + 1;
+                    int target2 = random.nextInt(30) + 1;
                     Objective dailyObj2 = new Objective(target2, calculateReward(ObjectiveType.USE_POWERUPS, target2), ObjectiveType.USE_POWERUPS, "Used", "Daily");
                     dailyObj2.setDescription(dailyObj2.getType(), dailyObj2.getTargetAmount());
                     dailyObjectives.add(dailyObj2);
@@ -263,7 +263,7 @@ public class ObjectiveManager {
         obj1.setDescription(obj1.getType(), obj1.getTargetAmount());
         regularObjectives.add(obj1);
 
-        Objective obj2 = new Objective(30, calculateReward(ObjectiveType.USE_POWERUPS, 30), ObjectiveType.USE_POWERUPS, "Used", "Regular");
+        Objective obj2 = new Objective(10, calculateReward(ObjectiveType.USE_POWERUPS, 30), ObjectiveType.USE_POWERUPS, "Used", "Regular");
         obj2.setDescription(obj2.getType(), obj2.getTargetAmount());
         regularObjectives.add(obj2);
 
@@ -450,7 +450,7 @@ public class ObjectiveManager {
                 objective.setDescription(objective.getType(), objective.getTargetAmount());
                 return objective;
             case 1:
-                Objective objective1 = new Objective(30 * multiplier, calculateReward(ObjectiveType.USE_POWERUPS, 30 * multiplier) * multiplier, ObjectiveType.USE_POWERUPS, "Used", "Regular");
+                Objective objective1 = new Objective(10 * multiplier, calculateReward(ObjectiveType.USE_POWERUPS, 30 * multiplier) * multiplier, ObjectiveType.USE_POWERUPS, "Used", "Regular");
                 objective1.setDescription(objective1.getType(), objective1.getTargetAmount());
                 return objective1;
             case 2:
@@ -543,15 +543,15 @@ public class ObjectiveManager {
 
         switch (type) {
             case CLEAR_LEVELS:
-                baseReward = 50;
+                baseReward = 40;
                 multiplier = 1.5f;
                 break;
             case TAP_TILES:
-                baseReward = 30;
-                multiplier = 1.f;
+                baseReward = 20;
+                multiplier = 1.1f;
                 break;
             case USE_POWERUPS:
-                baseReward = 40;
+                baseReward = 50;
                 multiplier = 1.2f;
                 break;
             case PLAY_TIME:

@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private String countText;
     private TextView countdownTextView;
     private Handler countdownHandler;
+    private InventoryManager inventoryManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         objectiveManager = new ObjectiveManager(this);
 
         //objectiveManager.resetObjectives();
+
+        inventoryManager = new InventoryManager(this);
 
         View settingButton = findViewById(R.id.settingButton);
 
@@ -143,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
         playButton.setOnClickListener(view -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt("originalRank", currentRank);
+            editor.putBoolean("rankUpAlreadyShown", false);
             editor.apply();
 
             objectiveManager.saveObjectives();
@@ -267,11 +271,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        if (currencyManager.getBeatCoins() == objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "regular").getTargetAmount()) {
+        if (currencyManager.getBeatCoins() >= objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "regular").getTargetAmount()) {
             objectiveManager.updateObjectiveProgress(ObjectiveType.COLLECT_COINS, objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "regular").getTargetAmount(), "regular");
         }
 
-        if (currencyManager.getBeatCoins() == objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "daily").getTargetAmount()) {
+        if (currencyManager.getBeatCoins() >= objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "daily").getTargetAmount()) {
             objectiveManager.updateObjectiveProgress(ObjectiveType.COLLECT_COINS, objectiveManager.getObjectiveByType(ObjectiveType.COLLECT_COINS, "daily").getTargetAmount(), "daily");
         }
 
@@ -448,6 +452,7 @@ public class MainActivity extends AppCompatActivity {
 
         for (InventoryItem item : rewards) {
             addRewardsToDisplay(item, rankUpItems);
+            inventoryManager.addItemToCategory(item.getCategory(),item);
         }
 
         continueButton.setOnClickListener(view -> {
@@ -455,7 +460,12 @@ public class MainActivity extends AppCompatActivity {
             if (bouncingSquaresView != null) {
                 bouncingSquaresView.resumeBouncing();
             }
-            onResume();
+            SharedPreferences sharedPreferences = getSharedPreferences("GameSettings", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            // Reset the rank-up flag so the player can see future rank-ups
+            editor.putBoolean("rankUpAlreadyShown", false);
+            editor.apply();
             rankUpOverLay.setVisibility(View.GONE);
             rankUpOverLay.removeAllViews();
         });
@@ -715,25 +725,24 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("GameSettings", MODE_PRIVATE);
         int originalRank = sharedPreferences.getInt("originalRank", currentRank);
+        boolean rankUpAlreadyShown = sharedPreferences.getBoolean("rankUpAlreadyShown", false);
+
 
         int updatedRank = progressManager.getRank();
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        Log.d("RankDebug", "Original Rank: " + originalRank + " | Updated Rank: " + updatedRank);
+        Log.d("RankDebug", "Original Rank: " + originalRank + " | Updated Rank: " + updatedRank + "Rank Up Check: " + rankUpAlreadyShown);
 
-        if (updatedRank > originalRank && !hasRankedUp) {
+        if (updatedRank > originalRank && !rankUpAlreadyShown) {
             Log.d("RankDebug", "Rank Up Detected! Showing Rank Up Menu.");
 
             int rankDif = updatedRank - originalRank;
 
             showRankUpMenu(updatedRank, rankDif);
-            editor.putInt("originalRank", currentRank);
+            editor.putInt("originalRank", updatedRank);
+            editor.putBoolean("rankUpAlreadyShown", true);
             editor.apply();
-            hasRankedUp = true;
-        } else {
-            hasRankedUp = false;
-            Log.d("RankDebug", "No Rank Up Detected.");
         }
     }
 

@@ -3,18 +3,20 @@ package com.example.rhythmtapgame;
 public class ShopEntry {
     private final int imageResourceId;
     private final String name;
-    private final String price;
-    private String itemQuantity;
+    private final double price;
+    private int itemQuantity;
     private String backgroundColor;
     private boolean isPurchasableByBeatCoin;
+    private String category;
 
-    public ShopEntry(int imageResourceId, String name, String price, String itemQuantity, String backgroundColor, boolean isPurchasableByBeatCoin) {
+    public ShopEntry(int imageResourceId, String name, double price, int itemQuantity, String backgroundColor, boolean isPurchasableByBeatCoin, String category) {
         this.imageResourceId = imageResourceId;
         this.name = name;
         this.price = price;
         this.itemQuantity = itemQuantity;
         this.backgroundColor = backgroundColor;
         this.isPurchasableByBeatCoin = isPurchasableByBeatCoin;
+        this.category = category;
     }
 
     public int getImageResourceId() {
@@ -25,15 +27,15 @@ public class ShopEntry {
         return name;
     }
 
-    public String getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public String getItemQuantity() {
+    public int getItemQuantity() {
         return itemQuantity;
     }
 
-    public void setItemQuantity(String itemQuantity) {
+    public void setItemQuantity(int itemQuantity) {
         this.itemQuantity = itemQuantity;
     }
 
@@ -51,5 +53,13 @@ public class ShopEntry {
 
     public void setIsPurchasableByBeatCoin(boolean isPurchasableByBeatCoin) {
         this.isPurchasableByBeatCoin = isPurchasableByBeatCoin;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

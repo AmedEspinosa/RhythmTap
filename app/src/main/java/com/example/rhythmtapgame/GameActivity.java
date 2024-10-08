@@ -116,11 +116,7 @@ public class GameActivity extends AppCompatActivity {
         objectiveManager = new ObjectiveManager(this);
 
         inventoryManager = new InventoryManager(this);
-
-        inventoryManager.updateItemQuantity("powerups", "freeze", 3);
-        inventoryManager.updateItemQuantity("powerups", "clear", 3);
-        inventoryManager.updateItemQuantity("powerups", "addTime", 3);
-
+        
         inventoryManager.saveInventory();
 
         freezeCount = inventoryManager.getItemQuantity("powerups", "freeze");

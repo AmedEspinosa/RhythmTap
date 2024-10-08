@@ -15,6 +15,8 @@ import java.util.List;
 
 public class ShopActivity extends AppCompatActivity {
     private LinearLayout storeItemsContainer;
+    private CurrencyManager currencyManager;
+    private InventoryManager inventoryManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,17 +25,17 @@ public class ShopActivity extends AppCompatActivity {
 
         storeItemsContainer = findViewById(R.id.storeItemsContainer);
 
-        CurrencyManager currencyManager = new CurrencyManager(this);
+        currencyManager = new CurrencyManager(this);
+
+        inventoryManager = new InventoryManager(this);
 
         List<ShopEntry> storeItems = new ArrayList<>();
-        storeItems.add(new ShopEntry(R.drawable.beat_coins_icon, "Small Beat Coin Pack", "$0.99", "x500", "#4C49DD", false));
-        storeItems.add(new ShopEntry(R.drawable.beat_coins_mult_icon, "Medium Beat Coin Pack", "$2.99", "x2000", "#D93232", false));
-        storeItems.add(new ShopEntry(R.drawable.ic_freeze, "Freeze Power-Up", "500", "x5", "#4C49DD", true));
-        storeItems.add(new ShopEntry(R.drawable.ic_clear, "Clear Power-Up", "500", "x5", "#D93232", true));
-        storeItems.add(new ShopEntry(R.drawable.ic_time, "Add Time Power-Up", "500", "x5", "#59B937", true));
-        storeItems.add(new ShopEntry(R.drawable.heart_icon, "Lives", "500", "x3", "#6A4EB9", true));
-
-
+        storeItems.add(new ShopEntry(R.drawable.beat_coins_icon, "Small Beat Coin Pack", 0.99, 500, "#4C49DD", false,"beatcoins"));
+        storeItems.add(new ShopEntry(R.drawable.beat_coins_mult_icon, "Medium Beat Coin Pack", 2.99, 2000, "#D93232", false,"beatcoins"));
+        storeItems.add(new ShopEntry(R.drawable.ic_freeze, "Freeze Power-Up", 500, 5, "#4C49DD", true,"powerups"));
+        storeItems.add(new ShopEntry(R.drawable.ic_clear, "Clear Power-Up", 500, 5, "#D93232", true,"powerups"));
+        storeItems.add(new ShopEntry(R.drawable.ic_time, "Add Time Power-Up", 500, 5, "#59B937", true,"powerups"));
+        storeItems.add(new ShopEntry(R.drawable.heart_icon, "Lives", 500, 5, "#6A4EB9", true,"lives"));
 
 
 
@@ -102,10 +104,14 @@ public class ShopActivity extends AppCompatActivity {
             coinItemPrice2.setVisibility(View.VISIBLE);
             beatCoinPriceIcon.setVisibility(View.VISIBLE);
 
+            double priceDub = item.getPrice();
 
-            coinItemPrice.setText(item.getPrice());
-            coinItemPrice1.setText(item.getPrice());
-            coinItemPrice2.setText(item.getPrice());
+            String itemPriceString = String.valueOf((int) priceDub);
+
+
+            coinItemPrice.setText(itemPriceString);
+            coinItemPrice1.setText(itemPriceString);
+            coinItemPrice2.setText(itemPriceString);
 
 
 
@@ -116,10 +122,12 @@ public class ShopActivity extends AppCompatActivity {
             TextView itemPrice1 = storeItemView.findViewById(R.id.itemPriceShadow1);
             TextView itemPrice2 = storeItemView.findViewById(R.id.itemPriceShadow2);
 
+            String itemPriceString = "$" + item.getPrice();
 
-            itemPrice.setText(item.getPrice());
-            itemPrice1.setText(item.getPrice());
-            itemPrice2.setText(item.getPrice());
+
+            itemPrice.setText(itemPriceString);
+            itemPrice1.setText(itemPriceString);
+            itemPrice2.setText(itemPriceString);
         }
 
 
@@ -135,13 +143,41 @@ public class ShopActivity extends AppCompatActivity {
         itemName1.setText(item.getName());
         itemName2.setText(item.getName());
 
+        String quantityString = "x" + item.getItemQuantity();
 
-        itemQuantity.setText(item.getItemQuantity());
-        itemQuantity1.setText(item.getItemQuantity());
-        itemQuantity2.setText(item.getItemQuantity());
+
+        itemQuantity.setText(quantityString);
+        itemQuantity1.setText(quantityString);
+        itemQuantity2.setText(quantityString);
 
         background.setBackgroundColor(Color.parseColor(item.getBackgroundColor()));
 
         storeItemsContainer.addView(storeItemView);
+
+        storeItemView.setOnClickListener(v -> {
+            handleItemPurchase(item);
+        });
     }
+
+    private void handleItemPurchase(ShopEntry item){
+
+        if (item.isPurchasableByBeatCoin()) {
+            if (currencyManager.getBeatCoins() > item.getPrice()) {
+                currencyManager.spendBeatCoins((int) item.getPrice());
+
+                inventoryManager.addItemToCategory(item.getCategory(),inventoryManager.getItemByCategory(item.getCategory(),item.getName(),item.getItemQuantity()));
+
+                TextView balance = findViewById(R.id.beatCoinBalanceText);
+                TextView balance1 = findViewById(R.id.beatCoinBalanceTextShadow1);
+                TextView balance2 = findViewById(R.id.beatCoinBalanceTextShadow2);
+
+                balance.setText(currencyManager.getBeatCoins());
+                balance1.setText(currencyManager.getBeatCoins());
+                balance2.setText(currencyManager.getBeatCoins());
+
+            }
+        }
+    }
+
+
 }

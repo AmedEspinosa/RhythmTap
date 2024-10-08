@@ -124,10 +124,10 @@ public class PlayerProgressManager {
 
     private InventoryItem getCommonReward(int playerRank) {
         List<InventoryItem> commonRewards = new ArrayList<>();
-        commonRewards.add(new InventoryItem("XP", 50 + playerRank * 10)); // XP scales with rank
-        commonRewards.add(new InventoryItem("freeze", 1));
-        commonRewards.add(new InventoryItem("clear", 1));
-        commonRewards.add(new InventoryItem("beatCoins",15));
+        commonRewards.add(new InventoryItem("XP", "xp",50 + playerRank * 10)); // XP scales with rank
+        commonRewards.add(new InventoryItem("freeze", "powerups", 1));
+        commonRewards.add(new InventoryItem("clear", "powerups",1));
+        commonRewards.add(new InventoryItem("beatCoins","powerups",15));
 
 
         return commonRewards.get(random.nextInt(commonRewards.size()));
@@ -136,8 +136,8 @@ public class PlayerProgressManager {
     // Example uncommon rewards (medium-tier powerups, low-tier skins)
     private InventoryItem getUncommonReward(int playerRank) {
         List<InventoryItem> uncommonRewards = new ArrayList<>();
-        uncommonRewards.add(new InventoryItem("addTime", 2));
-        uncommonRewards.add(new InventoryItem("beatCoins",50));
+        uncommonRewards.add(new InventoryItem("addTime", "powerups", 2));
+        uncommonRewards.add(new InventoryItem("beatCoins","powerups",50));
 
         //uncommonRewards.add(new InventoryItem("Skin", 1));
         //uncommonRewards.add(new InventoryItem("Beat Tile Pack", 2));
@@ -150,9 +150,9 @@ public class PlayerProgressManager {
         List<InventoryItem> rareRewards = new ArrayList<>();
         //rareRewards.add(new InventoryItem("Skin: Rare Skin", 1));
         //rareRewards.add(new InventoryItem("Song: Rare Song", 1));
-        rareRewards.add(new InventoryItem("XP", 200 + playerRank * 20));
-        rareRewards.add(new InventoryItem("freeze", 3));
-        rareRewards.add(new InventoryItem("beatCoins",100));
+        rareRewards.add(new InventoryItem("XP", "xp", 200 + playerRank * 20));
+        rareRewards.add(new InventoryItem("freeze", "powerups",3));
+        rareRewards.add(new InventoryItem("beatCoins", "beatcoins",100));
 
 
         return rareRewards.get(random.nextInt(rareRewards.size()));
@@ -163,9 +163,9 @@ public class PlayerProgressManager {
         List<InventoryItem> epicRewards = new ArrayList<>();
         //epicRewards.add(new InventoryItem("Exclusive Skin", 1));
         //epicRewards.add(new InventoryItem("Exclusive Song", 1));
-        epicRewards.add(new InventoryItem("XP", 500 + playerRank * 50)); // Huge XP bonus
-        epicRewards.add(new InventoryItem("clear", 3));
-        epicRewards.add(new InventoryItem("beatCoins",200));
+        epicRewards.add(new InventoryItem("XP", "xp",500 + playerRank * 50)); // Huge XP bonus
+        epicRewards.add(new InventoryItem("clear","powerups", 3));
+        epicRewards.add(new InventoryItem("beatCoins","beatcoins",200));
 
         return epicRewards.get(random.nextInt(epicRewards.size()));
     }
